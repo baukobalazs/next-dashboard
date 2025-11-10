@@ -4,8 +4,22 @@ import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+let sql : any ;
+
+if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
+  try {
+    sql = postgres(process.env.POSTGRES_URL, { ssl: 'require' });
+    console.log('Database connection established');
+  } catch (error) {
+    console.error('Failed to connect to database:', error);
+  
+    
+  }
+} else{
+    console.log('Using mock data in development');
+  }
 
 
 const FormSchema = z.object({
@@ -29,11 +43,12 @@ export async function createInvoice(formdata: FormData){
     console.log('typeof data: ', typeof amount);
     console.log('formdataraw ', formdata);
 
+    if(!USE_MOCK){
     await sql `
     INSERT INTO invoices (customer_id, amount, status, date)
     VALUES (${customerId}, ${amount}, ${status}, ${date})
     `;
-
+    }
     revalidatePath('/dashboard/invoices');
-    redirect('dashobard/onvoices');
+    redirect('/dashboard/invoices');
 }

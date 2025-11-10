@@ -11,14 +11,13 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-// Mock data fallback
-// Production-ban SOHA ne használj mockot, fejlesztésben csak ha explicit módon kéred
+
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
 let sql: any;
 
-// Production-ban mindig próbálj kapcsolódni
+
 if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
   try {
     sql = postgres(process.env.POSTGRES_URL, { ssl: 'require' });
@@ -33,7 +32,7 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
   }
 
 
-// Mock adatok
+// Mock data
 const MOCK_REVENUE: Revenue[] = [
   { month: 'Jan', revenue: 2000 },
   { month: 'Feb', revenue: 1800 },
@@ -370,7 +369,7 @@ export async function fetchInvoiceById(id: string) {
     return {
       id: invoice.id,
       customer_id: invoice.customer_id,
-      amount: invoice.amount / 100, // Convert cents to dollars
+      amount: invoice.amount / 100, 
       status: invoice.status,
     };
   }
