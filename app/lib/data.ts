@@ -1,7 +1,9 @@
 import postgres from 'postgres';
 import {
+  Customer,
   CustomerField,
   CustomersTableType,
+  Invoice,
   InvoiceForm,
   InvoicesTable,
   LatestInvoiceRaw,
@@ -9,28 +11,97 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+// Mock data fallback
+const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
+
+let sql: any;
+
+if (!USE_MOCK && process.env.POSTGRES_URL) {
+  try {
+    sql = postgres(process.env.POSTGRES_URL, { ssl: 'require' });
+  } catch (error) {
+    console.warn('Failed to connect to database, using mock data');
+  }
+}
+
+// Mock adatok
+const MOCK_REVENUE: Revenue[] = [
+  { month: 'Jan', revenue: 2000 },
+  { month: 'Feb', revenue: 1800 },
+  { month: 'Mar', revenue: 2200 },
+  { month: 'Apr', revenue: 2500 },
+  { month: 'May', revenue: 2300 },
+  { month: 'Jun', revenue: 3200 },
+  { month: 'Jul', revenue: 3500 },
+  { month: 'Aug', revenue: 3700 },
+  { month: 'Sep', revenue: 2500 },
+  { month: 'Oct', revenue: 2800 },
+  { month: 'Nov', revenue: 3000 },
+  { month: 'Dec', revenue: 4800 },
+];
 
 export async function fetchRevenue() {
-  try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
+  if (USE_MOCK || !sql) {
+    console.log('Using mock revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return MOCK_REVENUE;
+  }
 
+  try {
     console.log('Fetching revenue data...');
     await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue[]>`SELECT * FROM revenue`; 
-
     console.log('Data fetch completed after 3 seconds.');
-
     return data;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    console.log('Falling back to mock data');
+    return MOCK_REVENUE;
   }
 }
 
 export async function fetchLatestInvoices() {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock invoice data...');
+    return [
+      {
+        id: '1',
+        name: 'Evil Rabbit',
+        email: 'evil@rabbit.com',
+        image_url: '/customers/evil-rabbit.png',
+        amount: '$3,750.00',
+      },
+      {
+        id: '2',
+        name: 'Delba de Oliveira',
+        email: 'delba@oliveira.com',
+        image_url: '/customers/delba-de-oliveira.png',
+        amount: '$2,500.00',
+      },
+      {
+        id: '3',
+        name: 'Lee Robinson',
+        email: 'lee@robinson.com',
+        image_url: '/customers/lee-robinson.png',
+        amount: '$1,250.00',
+      },
+      {
+        id: '4',
+        name: 'Michael Novotny',
+        email: 'michael@novotny.com',
+        image_url: '/customers/michael-novotny.png',
+        amount: '$8,546.00',
+      },
+      {
+        id: '5',
+        name: 'Amy Burns',
+        email: 'amy@burns.com',
+        image_url: '/customers/amy-burns.png',
+        amount: '$6,500.00',
+      },
+    ];
+  }
+
   try {
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -39,7 +110,7 @@ export async function fetchLatestInvoices() {
       ORDER BY invoices.date DESC
       LIMIT 5`;
 
-    const latestInvoices = data.map((invoice) => ({
+    const latestInvoices = data.map((invoice: Invoice) => ({
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
@@ -51,10 +122,17 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchCardData() {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock card data...');
+    return {
+      numberOfCustomers: 42,
+      numberOfInvoices: 156,
+      totalPaidInvoices: '$45,231.89',
+      totalPendingInvoices: '$12,345.67',
+    };
+  }
+
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
@@ -86,6 +164,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
+
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
@@ -154,9 +233,8 @@ export async function fetchInvoiceById(id: string) {
       WHERE invoices.id = ${id};
     `;
 
-    const invoice = data.map((invoice) => ({
+    const invoice = data.map((invoice: Invoice) => ({
       ...invoice,
-      // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
 
@@ -204,7 +282,7 @@ export async function fetchFilteredCustomers(query: string) {
 		ORDER BY customers.name ASC
 	  `;
 
-    const customers = data.map((customer) => ({
+    const customers = data.map((customer: CustomersTableType) => ({
       ...customer,
       total_pending: formatCurrency(customer.total_pending),
       total_paid: formatCurrency(customer.total_paid),
