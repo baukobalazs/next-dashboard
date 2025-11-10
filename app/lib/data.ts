@@ -12,15 +12,24 @@ import {
 import { formatCurrency } from './utils';
 
 // Mock data fallback
+// Production-ban SOHA ne használj mockot, fejlesztésben csak ha explicit módon kéred
+
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
 let sql: any;
 
-if (!USE_MOCK && process.env.POSTGRES_URL) {
+// Production-ban mindig próbálj kapcsolódni
+if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
   try {
     sql = postgres(process.env.POSTGRES_URL, { ssl: 'require' });
+    console.log('Database connection established');
   } catch (error) {
-    console.warn('Failed to connect to database, using mock data');
+    console.error('Failed to connect to database:', error);
+  
+    console.log('Using mock data in development');
+  }
+  if(USE_MOCK){
+    console.warn('Using mock data in development');
   }
 }
 
@@ -38,6 +47,127 @@ const MOCK_REVENUE: Revenue[] = [
   { month: 'Oct', revenue: 2800 },
   { month: 'Nov', revenue: 3000 },
   { month: 'Dec', revenue: 4800 },
+];
+
+const MOCK_INVOICES: InvoicesTable[] = [
+  {
+    id: '1',
+    customer_id: 'cust1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    date: '2024-01-15',
+    amount: 375000,
+    status: 'pending',
+  },
+  {
+    id: '2',
+    customer_id: 'cust2',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2024-01-10',
+    amount: 250000,
+    status: 'paid',
+  },
+  {
+    id: '3',
+    customer_id: 'cust3',
+    name: 'Lee Robinson',
+    email: 'lee@robinson.com',
+    image_url: '/customers/lee-robinson.png',
+    date: '2024-01-08',
+    amount: 125000,
+    status: 'paid',
+  },
+  {
+    id: '4',
+    customer_id: 'cust4',
+    name: 'Michael Novotny',
+    email: 'michael@novotny.com',
+    image_url: '/customers/michael-novotny.png',
+    date: '2024-01-05',
+    amount: 854600,
+    status: 'pending',
+  },
+  {
+    id: '5',
+    customer_id: 'cust5',
+    name: 'Amy Burns',
+    email: 'amy@burns.com',
+    image_url: '/customers/amy-burns.png',
+    date: '2024-01-03',
+    amount: 650000,
+    status: 'paid',
+  },
+  {
+    id: '6',
+    customer_id: 'cust1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    date: '2023-12-20',
+    amount: 120000,
+    status: 'paid',
+  },
+  {
+    id: '7',
+    customer_id: 'cust2',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2023-12-15',
+    amount: 340000,
+    status: 'pending',
+  },
+];
+
+const MOCK_CUSTOMERS: CustomersTableType[] = [
+  {
+    id: 'cust1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    total_invoices: 2,
+    total_pending: 375000,
+    total_paid: 120000,
+  },
+  {
+    id: 'cust2',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    total_invoices: 2,
+    total_pending: 340000,
+    total_paid: 250000,
+  },
+  {
+    id: 'cust3',
+    name: 'Lee Robinson',
+    email: 'lee@robinson.com',
+    image_url: '/customers/lee-robinson.png',
+    total_invoices: 1,
+    total_pending: 0,
+    total_paid: 125000,
+  },
+  {
+    id: 'cust4',
+    name: 'Michael Novotny',
+    email: 'michael@novotny.com',
+    image_url: '/customers/michael-novotny.png',
+    total_invoices: 1,
+    total_pending: 854600,
+    total_paid: 0,
+  },
+  {
+    id: 'cust5',
+    name: 'Amy Burns',
+    email: 'amy@burns.com',
+    image_url: '/customers/amy-burns.png',
+    total_invoices: 1,
+    total_pending: 0,
+    total_paid: 650000,
+  },
 ];
 
 export async function fetchRevenue() {
@@ -63,43 +193,13 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   if (USE_MOCK || !sql) {
     console.log('Using mock invoice data...');
-    return [
-      {
-        id: '1',
-        name: 'Evil Rabbit',
-        email: 'evil@rabbit.com',
-        image_url: '/customers/evil-rabbit.png',
-        amount: '$3,750.00',
-      },
-      {
-        id: '2',
-        name: 'Delba de Oliveira',
-        email: 'delba@oliveira.com',
-        image_url: '/customers/delba-de-oliveira.png',
-        amount: '$2,500.00',
-      },
-      {
-        id: '3',
-        name: 'Lee Robinson',
-        email: 'lee@robinson.com',
-        image_url: '/customers/lee-robinson.png',
-        amount: '$1,250.00',
-      },
-      {
-        id: '4',
-        name: 'Michael Novotny',
-        email: 'michael@novotny.com',
-        image_url: '/customers/michael-novotny.png',
-        amount: '$8,546.00',
-      },
-      {
-        id: '5',
-        name: 'Amy Burns',
-        email: 'amy@burns.com',
-        image_url: '/customers/amy-burns.png',
-        amount: '$6,500.00',
-      },
-    ];
+    return MOCK_INVOICES.slice(0, 5).map((invoice) => ({
+      id: invoice.id,
+      name: invoice.name,
+      email: invoice.email,
+      image_url: invoice.image_url,
+      amount: formatCurrency(invoice.amount),
+    }));
   }
 
   try {
@@ -124,11 +224,18 @@ export async function fetchLatestInvoices() {
 export async function fetchCardData() {
   if (USE_MOCK || !sql) {
     console.log('Using mock card data...');
+    const totalPaid = MOCK_INVOICES
+      .filter(inv => inv.status === 'paid')
+      .reduce((sum, inv) => sum + inv.amount, 0);
+    const totalPending = MOCK_INVOICES
+      .filter(inv => inv.status === 'pending')
+      .reduce((sum, inv) => sum + inv.amount, 0);
+    
     return {
-      numberOfCustomers: 42,
-      numberOfInvoices: 156,
-      totalPaidInvoices: '$45,231.89',
-      totalPendingInvoices: '$12,345.67',
+      numberOfCustomers: MOCK_CUSTOMERS.length,
+      numberOfInvoices: MOCK_INVOICES.length,
+      totalPaidInvoices: formatCurrency(totalPaid),
+      totalPendingInvoices: formatCurrency(totalPending),
     };
   }
 
@@ -171,6 +278,21 @@ export async function fetchFilteredInvoices(
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
+  if (USE_MOCK || !sql) {
+    console.log('Using mock filtered invoices...');
+    const lowerQuery = query.toLowerCase();
+    
+    const filtered = MOCK_INVOICES.filter((invoice) => 
+      invoice.name.toLowerCase().includes(lowerQuery) ||
+      invoice.email.toLowerCase().includes(lowerQuery) ||
+      invoice.amount.toString().includes(lowerQuery) ||
+      invoice.date.includes(query) ||
+      invoice.status.toLowerCase().includes(lowerQuery)
+    );
+    
+    return filtered.slice(offset, offset + ITEMS_PER_PAGE);
+  }
+
   try {
     const invoices = await sql<InvoicesTable[]>`
       SELECT
@@ -201,6 +323,21 @@ export async function fetchFilteredInvoices(
 }
 
 export async function fetchInvoicesPages(query: string) {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock invoice pages...');
+    const lowerQuery = query.toLowerCase();
+    
+    const filtered = MOCK_INVOICES.filter((invoice) => 
+      invoice.name.toLowerCase().includes(lowerQuery) ||
+      invoice.email.toLowerCase().includes(lowerQuery) ||
+      invoice.amount.toString().includes(lowerQuery) ||
+      invoice.date.includes(query) ||
+      invoice.status.toLowerCase().includes(lowerQuery)
+    );
+    
+    return Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  }
+
   try {
     const data = await sql`SELECT COUNT(*)
     FROM invoices
@@ -222,6 +359,22 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock invoice by id...');
+    const invoice = MOCK_INVOICES.find(inv => inv.id === id);
+    
+    if (!invoice) {
+      throw new Error('Invoice not found');
+    }
+    
+    return {
+      id: invoice.id,
+      customer_id: invoice.customer_id,
+      amount: invoice.amount / 100, // Convert cents to dollars
+      status: invoice.status,
+    };
+  }
+
   try {
     const data = await sql<InvoiceForm[]>`
       SELECT
@@ -246,6 +399,14 @@ export async function fetchInvoiceById(id: string) {
 }
 
 export async function fetchCustomers() {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock customers...');
+    return MOCK_CUSTOMERS.map(customer => ({
+      id: customer.id,
+      name: customer.name,
+    }));
+  }
+
   try {
     const customers = await sql<CustomerField[]>`
       SELECT
@@ -263,6 +424,22 @@ export async function fetchCustomers() {
 }
 
 export async function fetchFilteredCustomers(query: string) {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock filtered customers...');
+    const lowerQuery = query.toLowerCase();
+    
+    const filtered = MOCK_CUSTOMERS.filter((customer) => 
+      customer.name.toLowerCase().includes(lowerQuery) ||
+      customer.email.toLowerCase().includes(lowerQuery)
+    );
+    
+    return filtered.map((customer) => ({
+      ...customer,
+      total_pending: formatCurrency(customer.total_pending),
+      total_paid: formatCurrency(customer.total_paid),
+    }));
+  }
+
   try {
     const data = await sql<CustomersTableType[]>`
 		SELECT
