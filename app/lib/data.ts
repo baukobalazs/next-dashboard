@@ -26,12 +26,12 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
   } catch (error) {
     console.error('Failed to connect to database:', error);
   
+    
+  }
+} else{
     console.log('Using mock data in development');
   }
-  if(USE_MOCK){
-    console.warn('Using mock data in development');
-  }
-}
+
 
 // Mock adatok
 const MOCK_REVENUE: Revenue[] = [
