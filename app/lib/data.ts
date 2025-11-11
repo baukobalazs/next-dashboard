@@ -365,7 +365,7 @@ export async function fetchInvoiceById(id: string) {
     if (!invoice) {
       throw new Error('Invoice not found');
     }
-    
+  
     return {
       id: invoice.id,
       customer_id: invoice.customer_id,
