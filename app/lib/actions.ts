@@ -70,7 +70,7 @@ export async function updateInvoice(id: string, formData: FormData) {
   if(!USE_MOCK){
   await sql`
     UPDATE invoices
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+    SET customer_id = ${customerId}, amount = ${amount}, status = ${status}
     WHERE id = ${id}
   `;
   }
