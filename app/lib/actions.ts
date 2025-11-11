@@ -75,3 +75,13 @@ export async function createInvoice(formdata: FormData){
     redirect('/dashboard/invoices');
   }
 
+  
+  export async function deleteInvoice(id:string){
+    if(!USE_MOCK) {
+      await sql`
+      DELETE FROM invoices WHERE id = ${id}
+      `;
+      revalidatePath('/dashboard/invoices')
+    }
+  }
+
