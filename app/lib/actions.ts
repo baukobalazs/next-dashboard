@@ -29,9 +29,9 @@ const FormSchema = z.object({
     }),
     amount: z.coerce
     .number()
-    .gt(0, {message: "Please enter an amount greater tahn 0$"}),
+    .gt(0, {message: "Please enter an amount greater than 0$"}),
     status: z.enum(['pending', 'paid'], {
-      invalid_type_error: "Please seleect an invoice status"
+      invalid_type_error: "Please select an invoice status"
     }),
     date: z.string(),
 })
@@ -56,7 +56,7 @@ export async function createInvoice(prevState : State,formdata: FormData){
     if(!validatedFields.success) {
       return {
         errors: validatedFields.error.flatten().fieldErrors,
-        message: "Missing fields. Failed to create invoice"
+        message: "Missing fields. Failed to create invoice."
       }
     }
     const {customerId, amount, status} = validatedFields.data;
@@ -70,7 +70,9 @@ export async function createInvoice(prevState : State,formdata: FormData){
     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
       } catch (error) {
-        console.error(error);
+        return {
+          message: "Database error: Failed to create Invoice"
+        };
        
       }
    
@@ -81,13 +83,20 @@ export async function createInvoice(prevState : State,formdata: FormData){
 
 
     const UpdateInvoice = FormSchema.omit({id: true, date: true});
-    export async function updateInvoice(id: string,formdata : FormData){
-      const {customerId, amount,status } = UpdateInvoice.parse({
+    export async function updateInvoice(id: string,prevState: State , formdata : FormData){
+      const validatedFields = UpdateInvoice.safeParse({
       customerId: formdata.get('customerId'),
       amount: formdata.get('amount'),
       status: formdata.get('status'),
     })
 
+    if(!validatedFields.success){
+      return  {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: "Missing fields. Failed to update invoice."
+      }
+    }
+    const {customerId, amount, status} = validatedFields.data;
     const amountInCents = amount * 100;
 
     if(!USE_MOCK){
@@ -98,7 +107,9 @@ export async function createInvoice(prevState : State,formdata: FormData){
       WHERE id = ${id}
     `;
       } catch (error) {
-        console.error(error);
+        return {
+          message: "Database error: failed to Update Invoice"
+        };
       }
   
     }
