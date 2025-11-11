@@ -49,9 +49,7 @@ export async function createInvoice(formdata: FormData){
     `;
       } catch (error) {
         console.error(error);
-        return {
-          message: "Database error: failed to Create Invoice"
-        }
+       
       }
    
     }
@@ -79,9 +77,7 @@ export async function createInvoice(formdata: FormData){
     `;
       } catch (error) {
         console.error(error);
-        return {
-          message: "Database error: failed to Update Invoice"
-        }
+        
       }
   
     }
