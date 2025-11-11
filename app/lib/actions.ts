@@ -24,20 +24,42 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
 
 const FormSchema = z.object({
     id: z.string(),
-    customerId: z.string(),
-    amount: z.coerce.number(),
-    status: z.enum(['pending', 'paid']),
+    customerId: z.string({
+      invalid_type_error: "Please select a customer",
+    }),
+    amount: z.coerce
+    .number()
+    .gt(0, {message: "Please enter an amount greater tahn 0$"}),
+    status: z.enum(['pending', 'paid'], {
+      invalid_type_error: "Please seleect an invoice status"
+    }),
     date: z.string(),
 })
 
+export type State = {
+  errors?: {
+    customerId? : string[],
+    amount? : string[], 
+    status? : string[],
+  };
+  message?: string | null;
+  
+}
+
 const CreateInvoice = FormSchema.omit({id: true, date: true});
-export async function createInvoice(formdata: FormData){
-    const {customerId, amount, status} = CreateInvoice.parse({
+export async function createInvoice(prevState : State,formdata: FormData){
+    const validatedFields = CreateInvoice.safeParse({
         customerId: formdata.get('customerId'),
         amount: formdata.get('amount'),
         status: formdata.get('status'),
     })
-
+    if(!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: "Missing fields. Failed to create invoice"
+      }
+    }
+    const {customerId, amount, status} = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
   
@@ -77,7 +99,6 @@ export async function createInvoice(formdata: FormData){
     `;
       } catch (error) {
         console.error(error);
-        
       }
   
     }
