@@ -65,13 +65,13 @@ export async function createInvoice(formdata: FormData){
     const amountInCents = amount * 100;
 
     if(!USE_MOCK){
-    await sql `
+    await sql`
       UPDATE invoices 
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHHERE id = ${id}
+      WHERE id = ${id}
     `;
     }
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
-    
   }
+
