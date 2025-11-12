@@ -130,14 +130,13 @@ export async function createInvoice(prevState : State,formdata: FormData){
     }
   }
 
-export async function authenticate(
+ export async function authenticate(
   prevState : string | undefined,
   formData : FormData,
 ) {
   try {
     const result = await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
+      formData,
       redirect: false,
     });
     
