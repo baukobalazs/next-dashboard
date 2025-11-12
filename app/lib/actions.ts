@@ -147,5 +147,6 @@ export async function createInvoice(prevState : State,formdata: FormData){
       }
       throw error;
     }
+    redirect("/dashboard");
   }
 
