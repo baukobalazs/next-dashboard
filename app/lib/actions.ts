@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
-import { resourceUsage } from 'process';
+
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -130,22 +130,22 @@ export async function createInvoice(prevState : State,formdata: FormData){
     }
   }
 
-  export async function authenticate(
-    prevState : string | undefined,
-    formData : FormData,
-  ) {
-    try {
-      await signIn('credentials', formData);
-    } catch (error) {
-      if(error instanceof AuthError){
-        switch (error.type){
-          case 'CredentialsSignin': 
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
           return 'Invalid credentials.';
-          default: 
-            return 'Something went wrong.';
-        }
+        default:
+          return 'Something went wrong.';
       }
-      throw error;
     }
+    throw error;
   }
+}
 
