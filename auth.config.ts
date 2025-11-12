@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { redirect } from 'next/navigation';
  
 export const authConfig = {
   pages: {
@@ -12,7 +13,7 @@ export const authConfig = {
         if (isLoggedIn) return true;
         return false; 
       } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+        redirect('dashboard')
       }
       return true;
     },
