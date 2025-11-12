@@ -8,10 +8,6 @@ import { Suspense } from "react";
 import { fetchInvoicesPages } from "@/app/lib/data";
 import { Metadata } from "next";
 
-export const metaData: Metadata = {
-  title: "Invoices",
-};
-
 export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
@@ -41,3 +37,7 @@ export default async function Page(props: {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Invoices",
+};
