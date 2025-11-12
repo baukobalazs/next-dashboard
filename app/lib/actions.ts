@@ -130,13 +130,14 @@ export async function createInvoice(prevState : State,formdata: FormData){
     }
   }
 
- export async function authenticate(
+export async function authenticate(
   prevState : string | undefined,
   formData : FormData,
 ) {
   try {
     const result = await signIn('credentials', {
-      formData,
+      email: formData.get('email'),
+      password: formData.get('password'),
       redirect: false,
     });
     
@@ -144,8 +145,9 @@ export async function createInvoice(prevState : State,formdata: FormData){
       return 'Invalid credentials.';
     }
     
-    // Manuális átirányítás sikeres bejelentkezés után
+   else{
     redirect('/dashboard');
+   }
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
