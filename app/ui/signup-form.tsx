@@ -10,6 +10,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useActionState } from "react";
 import { signup } from "../lib/actions";
+import { error } from "console";
 
 export default function SignUpForm() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -94,16 +95,16 @@ export default function SignUpForm() {
           <div className="mt-4">
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="confirm-password"
+              htmlFor="confirmPassword"
             >
               Confirm password
             </label>
             <div className="relative">
               <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="confirm-password"
+                id="confirmPassword"
                 type="password"
-                name="confirm-password"
+                name="confirmPassword"
                 placeholder="Confirm password"
                 required
                 minLength={6}
@@ -111,6 +112,9 @@ export default function SignUpForm() {
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
+          {state?.errors?.confirmPassword && (
+            <p>{state.errors.confirmPassword}</p>
+          )}
         </div>
 
         <Button className="mt-4 w-full" disabled={pending}>

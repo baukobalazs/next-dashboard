@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import bcrypt, { compare } from 'bcryptjs';
-import { equal } from 'assert';
+
 
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
@@ -41,28 +41,35 @@ const FormSchema = z.object({
     date: z.string(),
 })
 
-const SignupFormSchema = z.object({
+const passwordSchema = z
+  .string()
+    .min(6, { message: 'Be at least 6 characters long' })
+    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+    .regex(/[0-9]/, { message: 'Contain at least one number.' })
+    .trim()
+
+ const updatePasswordSchema = z
+  .object({
+    currentPassword: z.string(),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match!",
+    path: ['confirmPassword'],
+  });
+
+
+  const SignupFormSchema = z.object({
   name: z
     .string()
     .min(2, { message: 'Name must be at least 2 characters long.' })
     .trim(),
   email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-  password: z
-    .string()
-    .min(6, { message: 'Be at least 6 characters long' })
-    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-    .regex(/[0-9]/, { message: 'Contain at least one number.' })
-    .trim(),
+  password: passwordSchema,
+  confirmPassword: passwordSchema,
 })
 
-const passwordSchema = z.object({
-  name: z
-  .string()
-    .min(6, { message: 'Be at least 6 characters long' })
-    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-    .regex(/[0-9]/, { message: 'Contain at least one number.' })
-    .trim(),
-  });
 export type FormState =
   | {
       errors?: {
@@ -82,8 +89,8 @@ export async function signup(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    passwordSchema: formData.get('password'),
-    confirmPassword: formData.get('confirm')
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
   })
  
   
@@ -94,13 +101,17 @@ export async function signup(state: FormState, formData: FormData) {
       message: "Missing fields. Failed to create User.",
     }
   }
+
+
+   const passwordMatch = await bcrypt.compare(validatedFields.data.password, validatedFields.data.confirmPassword);
+if(passwordMatch){
   const { name, email, password } = validatedFields.data;
   const hashedPassword = await bcrypt.hash(password, 10);
   if(!USE_MOCK){
   try {
      await sql`
     INSERT INTO users (name, email, password)
-    VALUES (${name}, ${email}, ${password})
+    VALUES (${name}, ${email}, ${hashedPassword})
   `
   } catch (error) {
     return {
@@ -110,8 +121,8 @@ export async function signup(state: FormState, formData: FormData) {
   }
   revalidatePath('/login');
   redirect('/login');
+}else console.error("Invalid Credentials");
 }
-
 
 export type State = {
   errors?: {
