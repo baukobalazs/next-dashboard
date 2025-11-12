@@ -5,6 +5,8 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import bcrypt, { compare } from 'bcryptjs';
+import { equal } from 'assert';
 
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
@@ -38,6 +40,78 @@ const FormSchema = z.object({
     }),
     date: z.string(),
 })
+
+const SignupFormSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters long.' })
+    .trim(),
+  email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+  password: z
+    .string()
+    .min(6, { message: 'Be at least 6 characters long' })
+    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+    .regex(/[0-9]/, { message: 'Contain at least one number.' })
+    .trim(),
+})
+
+const passwordSchema = z.object({
+  name: z
+  .string()
+    .min(6, { message: 'Be at least 6 characters long' })
+    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+    .regex(/[0-9]/, { message: 'Contain at least one number.' })
+    .trim(),
+  });
+export type FormState =
+  | {
+      errors?: {
+        name?: string[]
+        email?: string[]
+        password?: string[]
+        confirmPassword? : string[],
+      }
+      message?: string
+    }
+  | undefined
+
+
+ 
+export async function signup(state: FormState, formData: FormData) {
+
+  const validatedFields = SignupFormSchema.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    passwordSchema: formData.get('password'),
+    confirmPassword: formData.get('confirm')
+  })
+ 
+  
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing fields. Failed to create User.",
+    }
+  }
+  const { name, email, password } = validatedFields.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  if(!USE_MOCK){
+  try {
+     await sql`
+    INSERT INTO users (name, email, password)
+    VALUES (${name}, ${email}, ${password})
+  `
+  } catch (error) {
+    return {
+      message: "Database error: Failed to create User"
+    }
+  }
+  }
+  revalidatePath('/login');
+  redirect('/login');
+}
+
 
 export type State = {
   errors?: {
@@ -148,3 +222,8 @@ export async function createInvoice(prevState : State,formdata: FormData){
       throw error;
     }
   }
+
+ 
+  
+
+ 

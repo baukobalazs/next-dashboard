@@ -52,9 +52,10 @@ export const { auth, signIn, signOut } = NextAuth({
         const passwordMatch = await bcrypt.compare(password, user.password);
         if(passwordMatch) return user;
         }
-        console.error("Invalid Credentials");
+        console.error("Invalid Email or Password");
         return null;
     },
   })
 ], 
 });
+
