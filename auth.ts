@@ -35,11 +35,6 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
     }
   }
 
-
-
-
-
-
 export const { auth, signIn, signOut } = NextAuth({
 
   ...authConfig,
