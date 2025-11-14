@@ -10,7 +10,6 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
-import NotFound from '../dashboard/invoices/[id]/edit/not-found';
 import { notFound } from 'next/navigation';
 
 
@@ -408,6 +407,7 @@ export async function fetchCustomerById(id: string) {
     const customer = MOCK_CUSTOMERS.find(inv => inv.id === id);
     
     if (!customer) {
+      notFound();
       throw new Error('Customer not found');
     }
   
@@ -427,9 +427,9 @@ export async function fetchCustomerById(id: string) {
     const data = await sql<CustomersTableType[]>`
       SELECT
         customers.id,
-        customer.name,
-        customer.email,
-        customer.image_url
+        customers.name,
+        customers.email,
+        customers.image_url
       FROM customers
       WHERE customers.id = ${id};
     `;
@@ -438,7 +438,9 @@ export async function fetchCustomerById(id: string) {
       ...customer,
       
     }));
-
+    if(!customer){
+      notFound();
+    }
     return customer[0];
   } catch (error) {
     console.error('Database Error:', error);
