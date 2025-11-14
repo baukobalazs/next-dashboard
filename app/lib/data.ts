@@ -432,9 +432,9 @@ export async function fetchCustomerById(id: string) {
         customer.image_url,
         customer.total_invoices,
         customer.total_pending,
-         customer.total_paid,
+        customer.total_paid
       FROM customers
-      WHERE customers.id = ${id};
+      WHERE id = ${id};
     `;
 
     const customer = data.map((customer: CustomersTableType) => ({
