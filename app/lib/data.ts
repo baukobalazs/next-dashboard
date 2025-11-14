@@ -546,7 +546,6 @@ export async function fetchCustomersPages(query: string) {
   try {
     const data = await sql`SELECT COUNT(*)
     FROM customers
-    JOIN customers ON customers.customer_id = customers.id
     WHERE
       customers.name ILIKE ${`%${query}%`} OR
       customers.email ILIKE ${`%${query}%`} 
