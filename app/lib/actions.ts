@@ -250,7 +250,7 @@ const CustomerFormSchema = z.object({
       }
   
     }
-    revalidatePath('/dashboard/customers');
+    revalidatePath('/dashboard', 'layout');
     redirect('/dashboard/customers');
   }
   
@@ -320,7 +320,7 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
       }
    
     }
-    revalidatePath('/dashboard/customers');
+    revalidatePath('/dashboard', 'layout');
     redirect('/dashboard/customers');
 }
  
