@@ -430,9 +430,7 @@ export async function fetchCustomerById(id: string) {
         customer.name,
         customer.email,
         customer.image_url,
-        customer.total_invoices,
-        customer.total_pending,
-         customer.total_paid,
+       
       FROM customers
       WHERE customers.id = ${id};
     `;
