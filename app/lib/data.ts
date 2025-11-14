@@ -10,6 +10,8 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
+import NotFound from '../dashboard/invoices/[id]/edit/not-found';
+import { notFound } from 'next/navigation';
 
 
 
@@ -363,7 +365,7 @@ export async function fetchInvoiceById(id: string) {
     const invoice = MOCK_INVOICES.find(inv => inv.id === id);
     
     if (!invoice) {
-      throw new Error('Invoice not found');
+      notFound();
     }
   
     return {
@@ -389,11 +391,61 @@ export async function fetchInvoiceById(id: string) {
       ...invoice,
       amount: invoice.amount / 100,
     }));
+     if (!invoice) {
+      notFound();
+    }
 
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoice.');
+  }
+}
+
+export async function fetchCustomerById(id: string) {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock customer by id...');
+    const customer = MOCK_CUSTOMERS.find(inv => inv.id === id);
+    
+    if (!customer) {
+      throw new Error('Customer not found');
+    }
+  
+    return {
+      id: customer.id,
+  name: customer.name,
+  email: customer.email,
+  image_url: customer.image_url,
+  total_invoices: customer.total_invoices,
+  total_pending: customer.total_pending,
+  total_paid: customer.total_paid,
+      
+    };
+  }
+
+  try {
+    const data = await sql<CustomersTableType[]>`
+      SELECT
+        customers.id,
+        customer.name,
+        customer.email,
+        customer.image_url,
+        customer.total_invoices,
+        customer.total_pending,
+         customer.total_paid,
+      FROM customers
+      WHERE customers.id = ${id};
+    `;
+
+    const customer = data.map((customer: CustomersTableType) => ({
+      ...customer,
+      
+    }));
+
+    return customer[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer.');
   }
 }
 
@@ -422,7 +474,11 @@ export async function fetchCustomers() {
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
+export async function fetchFilteredCustomers(
+  query: string,
+  currentPage: number,
+) {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   if (USE_MOCK || !sql) {
     console.log('Using mock filtered customers...');
     const lowerQuery = query.toLowerCase();
@@ -431,8 +487,10 @@ export async function fetchFilteredCustomers(query: string) {
       customer.name.toLowerCase().includes(lowerQuery) ||
       customer.email.toLowerCase().includes(lowerQuery)
     );
+
+   const  filteredSliced = filtered.slice(offset, offset + ITEMS_PER_PAGE);
     
-    return filtered.map((customer) => ({
+    return filteredSliced.map((customer) => ({
       ...customer,
       total_pending: formatCurrency(customer.total_pending),
       total_paid: formatCurrency(customer.total_paid),
@@ -470,3 +528,35 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+export async function fetchCustomersPages(query: string) {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock customers pages...');
+    const lowerQuery = query.toLowerCase();
+    
+    const filtered = MOCK_CUSTOMERS.filter((customer) => 
+      customer.name.toLowerCase().includes(lowerQuery) ||
+      customer.email.toLowerCase().includes(lowerQuery) 
+       
+    );
+
+    return Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  }
+
+  try {
+    const data = await sql`SELECT COUNT(*)
+    FROM customers
+    JOIN customers ON customers.customer_id = customers.id
+    WHERE
+      customers.name ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`} 
+  `;
+
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of customers.');
+  }
+}
+

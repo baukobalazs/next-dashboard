@@ -22,19 +22,7 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
     console.log('Using mock data in development');
   }
 
-const FormSchema = z.object({
-    id: z.string(),
-    customerId: z.string({
-      invalid_type_error: "Please select a customer",
-    }),
-    amount: z.coerce
-    .number()
-    .gt(0, {message: "Please enter an amount greater than 0$"}),
-    status: z.enum(['pending', 'paid'], {
-      invalid_type_error: "Please select an invoice status"
-    }),
-    date: z.string(),
-})
+
 
 const passwordSchema = z
   .string()
@@ -116,7 +104,7 @@ export async function signup(state: SignUpFormState, formData: FormData) {
 
 }
 
-export type State = {
+export type InvoiceState = {
   errors?: {
     customerId? : string[],
     amount? : string[], 
@@ -126,8 +114,22 @@ export type State = {
   
 }
 
-const CreateInvoice = FormSchema.omit({id: true, date: true});
-export async function createInvoice(prevState : State,formdata: FormData){
+const InvoiceFormSchema = z.object({
+    id: z.string(),
+    customerId: z.string({
+      invalid_type_error: "Please select a customer",
+    }),
+    amount: z.coerce
+    .number()
+    .gt(0, {message: "Please enter an amount greater than 0$"}),
+    status: z.enum(['pending', 'paid'], {
+      invalid_type_error: "Please select an invoice status"
+    }),
+    date: z.string(),
+})
+
+const CreateInvoice = InvoiceFormSchema.omit({id: true, date: true});
+export async function createInvoice(prevState : InvoiceState,formdata: FormData){
     const validatedFields = CreateInvoice.safeParse({
         customerId: formdata.get('customerId'),
         amount: formdata.get('amount'),
@@ -162,8 +164,8 @@ export async function createInvoice(prevState : State,formdata: FormData){
 }
 
 
-    const UpdateInvoice = FormSchema.omit({id: true, date: true});
-    export async function updateInvoice(id: string,prevState: State , formdata : FormData){
+    const UpdateInvoice = InvoiceFormSchema.omit({id: true, date: true});
+    export async function updateInvoice(id: string,prevState: InvoiceState , formdata : FormData){
       const validatedFields = UpdateInvoice.safeParse({
       customerId: formdata.get('customerId'),
       amount: formdata.get('amount'),
@@ -197,6 +199,42 @@ export async function createInvoice(prevState : State,formdata: FormData){
     redirect('/dashboard/invoices');
   }
 
+
+  // TODO
+   const UpdateCustomer = InvoiceFormSchema.omit({id: true, date: true});
+    export async function updateCustomer(id: string,prevState: InvoiceState , formdata : FormData){
+      const validatedFields = UpdateInvoice.safeParse({
+      customerId: formdata.get('customerId'),
+      amount: formdata.get('amount'),
+      status: formdata.get('status'),
+    })
+
+    if(!validatedFields.success){
+      return  {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: "Missing fields. Failed to update invoice."
+      }
+    }
+    const {customerId, amount, status} = validatedFields.data;
+    const amountInCents = amount * 100;
+
+    if(!USE_MOCK){
+      try {
+          await sql`
+      UPDATE invoices 
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
+      } catch (error) {
+        return {
+          message: "Database error: failed to Update Invoice"
+        };
+      }
+  
+    }
+    revalidatePath('/dashboard/invoices');
+    redirect('/dashboard/invoices');
+  }
   
   export async function deleteInvoice(id:string){
     if(!USE_MOCK) {
@@ -204,6 +242,15 @@ export async function createInvoice(prevState : State,formdata: FormData){
       DELETE FROM invoices WHERE id = ${id}
       `;
       revalidatePath('/dashboard/invoices')
+    }
+  }
+
+    export async function deleteCustomer(id:string){
+    if(!USE_MOCK) {
+      await sql`
+      DELETE FROM customers WHERE id = ${id}
+      `;
+      revalidatePath('/dashboard/customers')
     }
   }
 
@@ -227,6 +274,55 @@ export async function createInvoice(prevState : State,formdata: FormData){
   }
 
  
+ export type CustomerState = {
+  errors?: {
+    name? : string[], 
+    email? : string[],
+  };
+  message?: string | null;
   
+}
+
+
+const CustomerFormSchema = z.object({
+    id: z.string(),
+    name: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters long.' })
+    .trim(),
+   email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+})
+const CreateCustomer = CustomerFormSchema.omit({id: true});
+export async function createCustomer(prevState : CustomerState,formdata: FormData){
+    const validatedFields = CreateCustomer.safeParse({
+        name: formdata.get('name'),
+        email: formdata.get('email'),
+    })
+    if(!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: "Missing fields. Failed to create customer."
+      }
+    }
+    const { name, email} = validatedFields.data;
+  
+    if(!USE_MOCK){
+      try {
+         await sql `
+    INSERT INTO customers (name, email)
+    VALUES (${name}, ${email})
+    `;
+      } catch (error) {
+        return {
+          message: "Database error: Failed to create Customer"
+        };
+       
+      }
+   
+    }
+    revalidatePath('/dashboard/customers');
+    redirect('/dashboard/customers');
+}
+ 
 
  
