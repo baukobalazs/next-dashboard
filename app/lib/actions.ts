@@ -200,40 +200,58 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
   }
 
 
-  // TODO
-   const UpdateCustomer = InvoiceFormSchema.omit({id: true, date: true});
-    export async function updateCustomer(id: string,prevState: InvoiceState , formdata : FormData){
-      const validatedFields = UpdateInvoice.safeParse({
-      customerId: formdata.get('customerId'),
-      amount: formdata.get('amount'),
-      status: formdata.get('status'),
+   export type CustomerState = {
+  errors?: {
+    name? : string[], 
+    email? : string[],
+  };
+  message?: string | null;
+  
+}
+
+
+const CustomerFormSchema = z.object({
+    id: z.string(),
+    name: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters long.' })
+    .trim(),
+   email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+})
+
+
+   const UpdateCustomer = CustomerFormSchema.omit({id: true});
+    export async function updateCustomer(id: string,prevState: CustomerState , formdata : FormData){
+      const validatedFields = UpdateCustomer.safeParse({
+      name: formdata.get('name'),
+      email: formdata.get('email'),
     })
 
     if(!validatedFields.success){
       return  {
         errors: validatedFields.error.flatten().fieldErrors,
-        message: "Missing fields. Failed to update invoice."
+        message: "Missing fields. Failed to update customer."
       }
     }
-    const {customerId, amount, status} = validatedFields.data;
-    const amountInCents = amount * 100;
+    const {name, email} = validatedFields.data;
+   
 
     if(!USE_MOCK){
       try {
           await sql`
-      UPDATE invoices 
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      UPDATE customers 
+      SET  name = ${name}, email = ${email}
       WHERE id = ${id}
     `;
       } catch (error) {
         return {
-          message: "Database error: failed to Update Invoice"
+          message: "Database error: failed to update customers"
         };
       }
   
     }
-    revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
+    revalidatePath('/dashboard/customers');
+    redirect('/dashboard/customers');
   }
   
   export async function deleteInvoice(id:string){
@@ -274,24 +292,6 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
   }
 
  
- export type CustomerState = {
-  errors?: {
-    name? : string[], 
-    email? : string[],
-  };
-  message?: string | null;
-  
-}
-
-
-const CustomerFormSchema = z.object({
-    id: z.string(),
-    name: z
-    .string()
-    .min(2, { message: 'Name must be at least 2 characters long.' })
-    .trim(),
-   email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-})
 const CreateCustomer = CustomerFormSchema.omit({id: true});
 export async function createCustomer(prevState : CustomerState,formdata: FormData){
     const validatedFields = CreateCustomer.safeParse({
@@ -309,8 +309,8 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
     if(!USE_MOCK){
       try {
          await sql `
-    INSERT INTO customers (name, email)
-    VALUES (${name}, ${email})
+    INSERT INTO customers (name, email, image_url)
+    VALUES (${name}, ${email}, '/customers/defaultProfile.png')
     `;
       } catch (error) {
         return {

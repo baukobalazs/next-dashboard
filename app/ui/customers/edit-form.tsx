@@ -13,7 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
-import { InvoiceState, updateCustomer, updateInvoice } from "@/app/lib/actions";
+import { CustomerState, InvoiceState, updateCustomer } from "@/app/lib/actions";
 import { Suspense, useActionState } from "react";
 
 export default function EditCustomerForm({
@@ -21,7 +21,7 @@ export default function EditCustomerForm({
 }: {
   customer: CustomerEditForm;
 }) {
-  const initialState: InvoiceState = { message: null, errors: {} };
+  const initialState: CustomerState = { message: null, errors: {} };
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const [state, formAction] = useActionState(
     updateCustomerWithId,
@@ -91,7 +91,7 @@ export default function EditCustomerForm({
 
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/dashboard/customers"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
