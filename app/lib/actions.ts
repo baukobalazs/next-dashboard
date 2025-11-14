@@ -7,8 +7,6 @@ import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import bcrypt, { compare } from 'bcryptjs';
 
-
-
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
 let sql : any ;
@@ -19,13 +17,10 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
     console.log('Database connection established');
   } catch (error) {
     console.error('Failed to connect to database:', error);
-  
-    
   }
 } else{
     console.log('Using mock data in development');
   }
-
 
 const FormSchema = z.object({
     id: z.string(),
@@ -48,18 +43,6 @@ const passwordSchema = z
     .regex(/[0-9]/, { message: 'Contain at least one number.' })
     .trim()
 
- const updatePasswordSchema = z
-  .object({
-    currentPassword: z.string(),
-    password: passwordSchema,
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match!",
-    path: ['confirmPassword'],
-  });
-
-
   const SignupFormSchema = z.object({
   name: z
     .string()
@@ -67,7 +50,11 @@ const passwordSchema = z
     .trim(),
   email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
   password: passwordSchema,
-  confirmPassword: passwordSchema,
+  confirmPassword: z.string(),
+})
+.refine((data) => data.password == data.confirmPassword, {
+  message : "Passwords don't match!",
+  path: ['confirmPassword'],
 })
 
 export type SignUpFormState =
@@ -82,8 +69,7 @@ export type SignUpFormState =
     }
   | undefined
 
-
- 
+  
 export async function signup(state: SignUpFormState, formData: FormData) {
 
   const validatedFields = SignupFormSchema.safeParse({
@@ -93,27 +79,33 @@ export async function signup(state: SignUpFormState, formData: FormData) {
     confirmPassword: formData.get('confirmPassword'),
   })
  
-  
-
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Failed to create User.",
+      message:  "Validation failed",
     }
   }
 
-
-   const passwordMatch = await bcrypt.compare(validatedFields.data.password, validatedFields.data.confirmPassword);
-if(passwordMatch){
   const { name, email, password } = validatedFields.data;
-  const hashedPassword = await bcrypt.hash(password, 10);
+
   if(!USE_MOCK){
   try {
+    const existingUser  = await sql`
+      SELECT id FROM users WHERE email = ${email}
+    `
+      if(existingUser.length > 0){
+    return {
+      errors: { email: ["This email is already registered"]},
+      message: 'Email already exists',
+    }
+  }
+    const hashedPassword = await bcrypt.hash(password, 10);
      await sql`
     INSERT INTO users (name, email, password)
     VALUES (${name}, ${email}, ${hashedPassword})
   `
   } catch (error) {
+    console.log("Sign up error", error);
     return {
       message: "Database error: Failed to create User"
     }
@@ -121,7 +113,7 @@ if(passwordMatch){
   }
   revalidatePath('/login');
   redirect('/login');
-}else console.error("Invalid Credentials");
+
 }
 
 export type State = {
