@@ -225,7 +225,7 @@ export async function createInvoice(prevState : State,formdata: FormData){
       if(error instanceof AuthError){
         switch (error.type){
           case 'CredentialsSignin': 
-          return 'Invalid credentials.';
+          return 'kakafej123.';
           default: 
             return 'Something went wrong.';
         }
