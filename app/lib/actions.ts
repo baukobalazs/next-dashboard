@@ -52,7 +52,7 @@ const passwordSchema = z
   password: passwordSchema,
   confirmPassword: z.string(),
 })
-.refine((data) => data.password == data.confirmPassword, {
+.refine((data) => data.password === data.confirmPassword, {
   message : "Passwords don't match!",
   path: ['confirmPassword'],
 })
@@ -69,7 +69,7 @@ export type SignUpFormState =
     }
   | undefined
 
-  
+
 export async function signup(state: SignUpFormState, formData: FormData) {
 
   const validatedFields = SignupFormSchema.safeParse({
