@@ -70,7 +70,7 @@ const passwordSchema = z
   confirmPassword: passwordSchema,
 })
 
-export type FormState =
+export type SignUpFormState =
   | {
       errors?: {
         name?: string[]
@@ -84,7 +84,7 @@ export type FormState =
 
 
  
-export async function signup(state: FormState, formData: FormData) {
+export async function signup(state: SignUpFormState, formData: FormData) {
 
   const validatedFields = SignupFormSchema.safeParse({
     name: formData.get('name'),
@@ -225,7 +225,7 @@ export async function createInvoice(prevState : State,formdata: FormData){
       if(error instanceof AuthError){
         switch (error.type){
           case 'CredentialsSignin': 
-          return 'kakafej123.';
+          return 'Invalid credentials.';
           default: 
             return 'Something went wrong.';
         }

@@ -40,7 +40,12 @@ export default function SignUpForm() {
               />
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            {state?.errors?.name && <p>{state.errors.name}</p>}
+            {state?.errors?.name &&
+              state?.errors.name.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
           <div>
             <label
@@ -60,7 +65,12 @@ export default function SignUpForm() {
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            {state?.errors?.email && <p>{state.errors.email}</p>}
+            {state?.errors?.email &&
+              state?.errors.email.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
           <div className="mt-4">
             <label
@@ -87,7 +97,7 @@ export default function SignUpForm() {
               <p>Password must:</p>
               <ul>
                 {state.errors.password.map((error) => (
-                  <li key={error}>- {error}</li>
+                  <li className="text-sm text-red-500">{state.message}</li>
                 ))}
               </ul>
             </div>
@@ -112,9 +122,12 @@ export default function SignUpForm() {
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
-          {state?.errors?.confirmPassword && (
-            <p>{state.errors.confirmPassword}</p>
-          )}
+          {state?.errors?.confirmPassword &&
+            state?.errors.confirmPassword.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
         </div>
 
         <Button className="mt-4 w-full" disabled={pending}>
