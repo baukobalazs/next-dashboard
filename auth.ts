@@ -6,6 +6,7 @@ import type { User } from './app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
 import { mockUsers } from './app/lib/placeholder-data';
+import { createSession } from './app/lib/session';
 
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
@@ -61,7 +62,11 @@ export const { auth, signIn, signOut } = NextAuth({
             passwordMatch = await bcrypt.compare(password, user.password);
           }
           
-          if (passwordMatch) return user;
+          if (passwordMatch) {
+            await createSession(user.id);
+            return user;
+            
+          }
         }
         
         console.error("Invalid Credentials");
