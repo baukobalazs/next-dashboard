@@ -5,11 +5,7 @@ import { CreateInvoice } from "@/app/ui/invoices/buttons";
 import { lusitana } from "@/app/ui/fonts";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
-import {
-  fetchCustomersPages,
-  fetchFilteredCustomers,
-  fetchInvoicesPages,
-} from "@/app/lib/data";
+import { fetchCustomersPages } from "@/app/lib/data";
 import { Metadata } from "next";
 import { CreateCustomer } from "@/app/ui/customers/buttons";
 import CustomersTable from "@/app/ui/customers/table";
