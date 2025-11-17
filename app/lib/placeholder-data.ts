@@ -145,3 +145,16 @@ const revenue = [
 ];
 
 export { users, customers, invoices, revenue };
+
+
+
+const mockUsers = [
+  {
+    id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    name: 'Test User',
+    email: 'user@test.com',
+    password: '123456', 
+  }
+];
+
+export { mockUsers };
