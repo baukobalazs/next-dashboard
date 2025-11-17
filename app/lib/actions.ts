@@ -235,16 +235,15 @@ const CustomerFormSchema = z.object({
     }
     const {name, email} = validatedFields.data;
    
-
     if(!USE_MOCK){
       try {
       const existingUser = await sql `
-      SELECT id FROM users WHERE email = ${email}
+      SELECT id FROM customers WHERE email = ${email}
       `
       if(existingUser.length > 0){
         return {
           errors: {email: ["This email already registered"]},
-          message: 'Email already exists'
+          message: 'Email already exists',
         }
       }
           await sql`
@@ -318,7 +317,7 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
     if(!USE_MOCK){
       try {
         const existingUser = await sql`
-          SELECT id FROM users WHERE email = ${email}
+          SELECT id FROM customers WHERE email = ${email}
         `
         if(existingUser.length > 0){
           return {
