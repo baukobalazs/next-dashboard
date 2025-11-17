@@ -1,18 +1,15 @@
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
-import {z} from 'zod';
+import { z } from 'zod';
 import type { User } from './app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
 import { mockUsers } from './app/lib/placeholder-data';
-import { createSession } from './app/lib/session';
-
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
 let sql: any;
-
 
 if ((!USE_MOCK) && process.env.POSTGRES_URL) {
   try {
@@ -27,13 +24,11 @@ if ((!USE_MOCK) && process.env.POSTGRES_URL) {
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
-    // Mock mód
     if (USE_MOCK) {
       const user = mockUsers.find(u => u.email === email);
       return user;
     }
     
-    // Valós adatbázis
     const user = await sql<User[]>`SELECT * FROM users WHERE email = ${email}`;
     return user[0];
   } catch (error) {
@@ -44,6 +39,23 @@ async function getUser(email: string): Promise<User | undefined> {
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as User).role || 'user';
+      }
+      return token;
+    
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+  },
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -55,6 +67,7 @@ export const { auth, signIn, signOut } = NextAuth({
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
           if (!user) return null;
+       
           let passwordMatch = false;
           if (USE_MOCK) {
             passwordMatch = password === user.password;
@@ -63,9 +76,7 @@ export const { auth, signIn, signOut } = NextAuth({
           }
           
           if (passwordMatch) {
-            await createSession(user.id);
-            return user;
-            
+            return user; 
           }
         }
         
