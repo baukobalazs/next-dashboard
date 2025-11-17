@@ -238,6 +238,15 @@ const CustomerFormSchema = z.object({
 
     if(!USE_MOCK){
       try {
+      const existingUser = await sql `
+      SELECT id FROM users WHERE email = ${email}
+      `
+      if(existingUser.length > 0){
+        return {
+          errors: {email: ["This email already registered"]},
+          message: 'Email already exists'
+        }
+      }
           await sql`
       UPDATE customers 
       SET  name = ${name}, email = ${email}
