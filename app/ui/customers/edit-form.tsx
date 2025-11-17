@@ -49,12 +49,12 @@ export default function EditCustomerForm({
             </div>
           </div>
           <div id="name-error" aria-live="polite" aria-atomic="true">
-            {/* {state.errors?.name &&
+            {state.errors?.name &&
               state.errors.name.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
-              ))} */}
+              ))}
           </div>
         </div>
       </div>
@@ -79,12 +79,12 @@ export default function EditCustomerForm({
             </div>
           </div>
           <div id="email-error" aria-live="polite" aria-atomic="true">
-            {/* {state.errors?.name &&
-              state.errors.name.map((error: string) => (
+            {state.errors?.email &&
+              state.errors.email.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
-              ))} */}
+              ))}
           </div>
         </div>
       </div>
