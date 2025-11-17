@@ -24,7 +24,6 @@ export default async function Page(props: {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchCustomersPages(query);
-  const customers = await fetchFilteredCustomers(query, currentPage);
 
   return (
     <div className="w-full">
@@ -38,11 +37,7 @@ export default async function Page(props: {
         <CreateCustomer />
       </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <CustomersTable
-          query={query}
-          customers={customers}
-          currentPage={currentPage}
-        />
+        <CustomersTable query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
