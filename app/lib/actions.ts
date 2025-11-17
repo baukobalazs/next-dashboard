@@ -308,6 +308,15 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
   
     if(!USE_MOCK){
       try {
+        const existingUser = await sql`
+          SELECT id FROM users WHERE email = ${email}
+        `
+        if(existingUser.length > 0){
+          return {
+            errors: {email : ["This email is already registered"]},
+            message: "Email already exists",
+          }
+        }
          await sql `
     INSERT INTO customers (name, email, image_url)
     VALUES (${name}, ${email}, '/customers/defaultProfile.png')
