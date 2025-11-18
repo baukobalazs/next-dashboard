@@ -9,12 +9,12 @@ export default  auth(async(req) => {
   const isOnSignup = req.nextUrl.pathname.startsWith('/signup')
   const isOnEdit = req.nextUrl.pathname.includes('/edit')
   const isOnCreate = req.nextUrl.pathname.includes('/create')
-  // Védett route-ok
+
   if (isOnDashboard && !isLoggedIn) {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
-  // Ha be van jelentkezve, ne menjen login/signup-ra
+
   if ((isOnLogin || isOnSignup) && isLoggedIn) {
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
   }

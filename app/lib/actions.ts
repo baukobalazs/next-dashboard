@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation';
 import { auth, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import bcrypt, { compare } from 'bcryptjs';
+import { Resend } from "resend";
+import crypto from "crypto";
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -58,6 +60,8 @@ export type SignUpFormState =
   | undefined
 
 
+
+
 export async function signup(state: SignUpFormState, formData: FormData) {
 
   const validatedFields = SignupFormSchema.safeParse({
@@ -73,6 +77,7 @@ export async function signup(state: SignUpFormState, formData: FormData) {
       message:  "Validation failed",
     }
   }
+  
 
   const { name, email, password } = validatedFields.data;
 
@@ -92,6 +97,24 @@ export async function signup(state: SignUpFormState, formData: FormData) {
     INSERT INTO users (name, email, password, role)
     VALUES (${name}, ${email}, ${hashedPassword}, 'user')
   `
+  const verificationToken = crypto.randomBytes(32).toString("hex");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  await sql`
+  INSERT INTO email_verification_tokens (user_email, token)
+  VALUES (${email}, ${verificationToken})
+`;
+await resend.emails.send({
+  from: "no-reply@yourapp.com",
+  to: email,
+  subject: "Verify your email",
+  html: `
+    <p>Hi ${name},</p>
+    <p>Click the link below to verify your email:</p>
+    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/verify?token=${verificationToken}">
+      Verify Email
+    </a>
+  `,
+});
   } catch (error) {
     console.log("Sign up error", error);
     return {
