@@ -89,8 +89,8 @@ export async function signup(state: SignUpFormState, formData: FormData) {
   }
     const hashedPassword = await bcrypt.hash(password, 10);
      await sql`
-    INSERT INTO users (name, email, password)
-    VALUES (${name}, ${email}, ${hashedPassword})
+    INSERT INTO users (name, email, password, role)
+    VALUES (${name}, ${email}, ${hashedPassword}, 'user')
   `
   } catch (error) {
     console.log("Sign up error", error);
