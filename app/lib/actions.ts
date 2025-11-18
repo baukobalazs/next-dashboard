@@ -59,7 +59,14 @@ export type SignUpFormState =
     }
   | undefined
 
+function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
 
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+
+  return "http://localhost:3000";
+}
+const baseUrl = getBaseUrl();
 
 
 export async function signup(state: SignUpFormState, formData: FormData) {
@@ -103,18 +110,23 @@ export async function signup(state: SignUpFormState, formData: FormData) {
   INSERT INTO email_verification_tokens (user_email, token)
   VALUES (${email}, ${verificationToken})
 `;
-await resend.emails.send({
-  from: "no-reply@yourapp.com",
+const result = await resend.emails.send({
+  from: "Acme <onboarding@resend.dev>",
   to: email,
   subject: "Verify your email",
   html: `
     <p>Hi ${name},</p>
     <p>Click the link below to verify your email:</p>
-    <a href="${process.env.NEXT_PUBLIC_BASE_URL}/verify?token=${verificationToken}">
+    <a href="${baseUrl}/verify?token=${verificationToken}">
+    
       Verify Email
     </a>
   `,
 });
+if (result.error) {
+  console.error("RESEND ERROR:", result.error);
+}
+
   } catch (error) {
     console.log("Sign up error", error);
     return {
@@ -126,6 +138,8 @@ await resend.emails.send({
   redirect('/login');
 
 }
+
+
 
 export type InvoiceState = {
   errors?: {
