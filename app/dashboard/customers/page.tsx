@@ -9,6 +9,7 @@ import { fetchCustomersPages } from "@/app/lib/data";
 import { Metadata } from "next";
 import { CreateCustomer } from "@/app/ui/customers/buttons";
 import CustomersTable from "@/app/ui/customers/table";
+import { auth } from "@/auth";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -20,6 +21,7 @@ export default async function Page(props: {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchCustomersPages(query);
+  const session = await auth();
 
   return (
     <div className="w-full">
@@ -30,7 +32,7 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search customers..." />
-        <CreateCustomer />
+        {session?.user.role === "admin" && <CreateCustomer />}
       </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <CustomersTable query={query} currentPage={currentPage} />

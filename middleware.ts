@@ -8,7 +8,7 @@ export default  auth(async(req) => {
   const isOnLogin = req.nextUrl.pathname.startsWith('/login')
   const isOnSignup = req.nextUrl.pathname.startsWith('/signup')
   const isOnEdit = req.nextUrl.pathname.includes('/edit')
-  
+  const isOnCreate = req.nextUrl.pathname.includes('/create')
   // Védett route-ok
   if (isOnDashboard && !isLoggedIn) {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
@@ -21,7 +21,9 @@ export default  auth(async(req) => {
    if ((isOnEdit) && session?.user.role !== 'admin' ) {
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
   }
-
+   if ((isOnCreate) && session?.user.role !== 'admin' ) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  }
   return NextResponse.next()
 })
 

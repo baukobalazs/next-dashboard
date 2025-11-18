@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { fetchInvoicesPages } from "@/app/lib/data";
 import { Metadata } from "next";
 import InvoicesTable from "@/app/ui/invoices/table";
+import { auth } from "@/auth";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -19,6 +20,7 @@ export default async function Page(props: {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchInvoicesPages(query);
+  const session = await auth();
 
   return (
     <div className="w-full">
@@ -27,7 +29,7 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search invoices..." />
-        <CreateInvoice />
+        {session?.user.id === "admin" && <CreateInvoice />}
       </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <InvoicesTable query={query} currentPage={currentPage} />
