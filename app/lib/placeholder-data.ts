@@ -156,6 +156,7 @@ const mockUsers = [
     email: 'qwe@asd.com',
     password: 'qwe123', 
     role: 'admin',
+    isverified: false,
   },
     {
     id: '230564b2-4001-4271-9855-fec4b6a6432c',
@@ -163,6 +164,7 @@ const mockUsers = [
     email: 'asd@asd.com',
     password: 'qwe123', 
     role: 'user',
+    isverified: true,
   },
 ];
 
