@@ -155,7 +155,15 @@ const mockUsers = [
     name: 'Test User',
     email: 'qwe@asd.com',
     password: 'qwe123', 
-  }
+    role: 'admin',
+  },
+    {
+    id: '230564b2-4001-4271-9855-fec4b6a6432c',
+    name: 'asd',
+    email: 'asd@asd.com',
+    password: 'qwe123', 
+    role: 'user',
+  },
 ];
 
 export { mockUsers };

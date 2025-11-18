@@ -1,12 +1,14 @@
 import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 
-export default auth((req) => {
+export default  auth(async(req) => {
+  const session = await auth();
   const isLoggedIn = !!req.auth
   const isOnDashboard = req.nextUrl.pathname.startsWith('/dashboard')
   const isOnLogin = req.nextUrl.pathname.startsWith('/login')
   const isOnSignup = req.nextUrl.pathname.startsWith('/signup')
-
+  const isOnEdit = req.nextUrl.pathname.includes('/edit')
+  
   // Védett route-ok
   if (isOnDashboard && !isLoggedIn) {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
@@ -14,6 +16,9 @@ export default auth((req) => {
 
   // Ha be van jelentkezve, ne menjen login/signup-ra
   if ((isOnLogin || isOnSignup) && isLoggedIn) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  }
+   if ((isOnEdit) && session?.user.role !== 'admin' ) {
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
   }
 

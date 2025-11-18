@@ -4,6 +4,7 @@ import InvoiceStatus from "@/app/ui/invoices/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredInvoices } from "@/app/lib/data";
 import { Invoice, LatestInvoice } from "@/app/lib/definitions";
+import { auth } from "@/auth";
 
 export default async function InvoicesTable({
   query,
@@ -13,7 +14,7 @@ export default async function InvoicesTable({
   currentPage: number;
 }) {
   const invoices = await fetchFilteredInvoices(query, currentPage);
-
+  const session = await auth();
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -109,10 +110,12 @@ export default async function InvoicesTable({
                     <InvoiceStatus status={invoice.status} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
-                    </div>
+                    {session?.user.role === "admin" && (
+                      <div className="flex justify-end gap-3">
+                        <UpdateInvoice id={invoice.id} />
+                        <DeleteInvoice id={invoice.id} />
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

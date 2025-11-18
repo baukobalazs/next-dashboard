@@ -7,6 +7,8 @@ import {
 } from "@/app/lib/definitions";
 import { DeleteCustomer, UpdateCustomer } from "./buttons";
 import { fetchFilteredCustomers } from "@/app/lib/data";
+import { authConfig } from "@/auth.config";
+import { auth } from "@/auth";
 export default async function CustomersTable({
   query,
 
@@ -17,6 +19,8 @@ export default async function CustomersTable({
   currentPage: number;
 }) {
   const customers = await fetchFilteredCustomers(query, currentPage);
+  const session = await auth();
+
   return (
     <div className="w-full">
       <div className="mt-6 flow-root">
@@ -113,10 +117,12 @@ export default async function CustomersTable({
                         {customer.total_paid}
                       </td>
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                        <div className="flex justify-end gap-3">
-                          <UpdateCustomer id={customer.id} />
-                          <DeleteCustomer id={customer.id} />
-                        </div>
+                        {session?.user.role === "admin" && (
+                          <div className="flex justify-end gap-3">
+                            <UpdateCustomer id={customer.id} />
+                            <DeleteCustomer id={customer.id} />
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
