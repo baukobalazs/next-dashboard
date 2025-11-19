@@ -9,6 +9,7 @@ import { DeleteCustomer, UpdateCustomer } from "./buttons";
 import { fetchFilteredCustomers } from "@/app/lib/data";
 import { authConfig } from "@/auth.config";
 import { auth } from "@/auth";
+import Link from "next/link";
 export default async function CustomersTable({
   query,
 
@@ -22,12 +23,12 @@ export default async function CustomersTable({
   const session = await auth();
 
   return (
-    <div className="w-full">
-      <div className="mt-6 flow-root">
-        <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
-              <div className="md:hidden">
+    <div className="w-full ">
+      <div className="mt-6 flow-root ">
+        <div className="overflow-x-auto ">
+          <div className="inline-block min-w-full  align-middle">
+            <div className="overflow-hidden rounded-md  p-2 md:pt-0">
+              <div className="md:hidden ">
                 {customers?.map((customer: any) => (
                   <div
                     key={customer.id}
@@ -62,6 +63,11 @@ export default async function CustomersTable({
                         <p className="font-medium">{customer.total_paid}</p>
                       </div>
                     </div>
+                    <div className="whitespace-nowrap  text-blue-800 text-center  py-3">
+                      <Link href={`/dashboard/customers/${customer.id}`}>
+                        Show more
+                      </Link>
+                    </div>
                     <div className="pt-4 text-sm">
                       <p>{customer.total_invoices} invoices</p>
                       {session?.user.role === "admin" && (
@@ -92,6 +98,8 @@ export default async function CustomersTable({
                     <th scope="col" className="px-4 py-5 font-medium">
                       Total Paid
                     </th>
+                    <th scope="col" className="px-4 py-5 font-medium"></th>
+                    <th scope="col" className="px-4 py-5 font-medium"></th>
                   </tr>
                 </thead>
 
@@ -121,6 +129,11 @@ export default async function CustomersTable({
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
                         {customer.total_paid}
+                      </td>
+                      <td className="whitespace-nowrap  text-blue-800 text-center  py-3">
+                        <Link href={`/dashboard/customers/${customer.id}`}>
+                          Show more
+                        </Link>
                       </td>
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
                         {session?.user.role === "admin" && (

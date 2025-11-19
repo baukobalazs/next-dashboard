@@ -493,7 +493,8 @@ export async function fetchFilteredCustomers(
     
     const filtered = MOCK_CUSTOMERS.filter((customer) => 
       customer.name.toLowerCase().includes(lowerQuery) ||
-      customer.email.toLowerCase().includes(lowerQuery)
+      customer.email.toLowerCase().includes(lowerQuery)||
+      customer.id.toLowerCase().includes(lowerQuery)
     );
 
    const  filteredSliced = filtered.slice(offset, offset + ITEMS_PER_PAGE);

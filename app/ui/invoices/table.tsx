@@ -49,6 +49,11 @@ export default async function InvoicesTable({
                     </p>
                     <p>{formatDateToLocal(invoice.date)}</p>
                   </div>
+                  <div className="whitespace-nowrap  text-blue-800 text-center  py-3">
+                    <Link href={`/dashboard/invoices/${invoice.id}`}>
+                      Show more
+                    </Link>
+                  </div>
                   {session?.user.role === "admin" && (
                     <div className="flex justify-end gap-2">
                       <UpdateInvoice id={invoice.id} />
