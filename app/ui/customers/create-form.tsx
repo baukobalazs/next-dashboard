@@ -1,19 +1,11 @@
 "use client";
 
-import { CustomerField, User, UserField } from "@/app/lib/definitions";
+import { UserField } from "@/app/lib/definitions";
 import Link from "next/link";
-import {
-  AtSymbolIcon,
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
+import { AtSymbolIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
 import { createCustomer, CustomerState } from "@/app/lib/actions";
 import { useActionState, useState } from "react";
-import { error } from "console";
-import { set } from "zod";
 
 export default function CustomerCreateForm({ users }: { users: UserField[] }) {
   const initialState: CustomerState = { message: null, errors: {} };

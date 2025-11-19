@@ -21,7 +21,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           { label: "Invoices", href: "/dashboard/invoices" },
           {
             label: `Invoice ${id}`,
-            href: `/dashboard/invoices/${id}/edit`,
+            href: `/dashboard/invoices/${id}`,
             active: true,
           },
         ]}

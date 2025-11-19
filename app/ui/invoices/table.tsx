@@ -5,6 +5,7 @@ import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredInvoices } from "@/app/lib/data";
 import { Invoice, LatestInvoice } from "@/app/lib/definitions";
 import { auth } from "@/auth";
+import Link from "next/link";
 
 export default async function InvoicesTable({
   query,
@@ -81,6 +82,7 @@ export default async function InvoicesTable({
                 </th>
               </tr>
             </thead>
+
             <tbody className="bg-white">
               {invoices?.map((invoice: any) => (
                 <tr
@@ -99,6 +101,7 @@ export default async function InvoicesTable({
                       <p>{invoice.name}</p>
                     </div>
                   </td>
+
                   <td className="whitespace-nowrap px-3 py-3">
                     {invoice.email}
                   </td>
@@ -111,7 +114,12 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     <InvoiceStatus status={invoice.status} />
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="whitespace-nowrap  text-blue-800 text-center  py-3">
+                    <Link href={`/dashboard/invoices/${invoice.id}`}>
+                      Show more
+                    </Link>
+                  </td>
+                  <td className="whitespace-nowrap py-3  pr-3">
                     {session?.user.role === "admin" && (
                       <div className="flex justify-end gap-3">
                         <UpdateInvoice id={invoice.id} />

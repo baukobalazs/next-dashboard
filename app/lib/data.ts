@@ -293,11 +293,10 @@ export async function fetchFilteredInvoices(
     const lowerQuery = query.toLowerCase();
     
     const filtered = MOCK_INVOICES.filter((invoice) => 
+      invoice.id.toLowerCase().includes(lowerQuery) ||
       invoice.name.toLowerCase().includes(lowerQuery) ||
-      invoice.email.toLowerCase().includes(lowerQuery) ||
-      invoice.amount.toString().includes(lowerQuery) ||
-      invoice.date.includes(query) ||
-      invoice.status.toLowerCase().includes(lowerQuery)
+      invoice.email.toLowerCase().includes(lowerQuery) 
+    
     );
     
     return filtered.slice(offset, offset + ITEMS_PER_PAGE);
