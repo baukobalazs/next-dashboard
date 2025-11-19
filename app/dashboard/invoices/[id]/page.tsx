@@ -8,7 +8,6 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   const params = await props.params;
   const id = params.id;
   const invoice = await fetchInvoiceById(id);
-  const customer = await fetchCustomerById(invoice.customer_id);
 
   if (!invoice.id) {
     notFound();
