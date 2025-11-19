@@ -1,4 +1,6 @@
 
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import postgres from "postgres";
 
 const USE_MOCK = process.env.USE_MOCK_DATA === "true";
@@ -38,6 +40,8 @@ export async function GET(req: Request) {
     DELETE FROM email_verification_tokens
     WHERE token = ${token}
   `;
-
-  return Response.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`);
+  
+  
+  return new Response("Email verified successfully", { status: 200 });
+  
 }
