@@ -94,7 +94,6 @@ export default function SignUpForm() {
           </div>
           {state?.errors?.password && (
             <div>
-              <p>Password must:</p>
               <ul>
                 {state.errors.password.map((error) => (
                   <li className="text-sm text-red-500">{state.message}</li>
@@ -137,12 +136,6 @@ export default function SignUpForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {state?.errors && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{state.message}</p>
-            </>
-          )}
           {/* Add form errors here */}
           <div className="mt-4 flex items-center space-x-1 text-sm">
             <p>Already have an account? Click </p>

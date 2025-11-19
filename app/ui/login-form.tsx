@@ -76,12 +76,6 @@ export default function LoginForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {errorMessage && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-          )}
           {/* Add form errors here */}
         </div>
         <div className="mt-4 flex items-center space-x-1 text-sm">
