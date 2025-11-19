@@ -26,7 +26,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           },
         ]}
       />
-      <SingleInvoiceForm invoice={invoice} customer={customer} />
+      <SingleInvoiceForm invoice={invoice} />
     </main>
   );
 };
