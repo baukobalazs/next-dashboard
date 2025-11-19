@@ -34,7 +34,7 @@ if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
   }
 
 
-// Mock data
+
 const MOCK_REVENUE: Revenue[] = [
   { month: 'Jan', revenue: 2000 },
   { month: 'Feb', revenue: 1800 },

@@ -1,6 +1,6 @@
 "use client";
 
-import { CustomerField, UserField } from "@/app/lib/definitions";
+import { CustomerField, User, UserField } from "@/app/lib/definitions";
 import Link from "next/link";
 import {
   AtSymbolIcon,
@@ -19,6 +19,7 @@ export default function CustomerCreateForm({ users }: { users: UserField[] }) {
   const initialState: CustomerState = { message: null, errors: {} };
   const [state, formAction] = useActionState(createCustomer, initialState);
   const [email, setEmail] = useState("");
+  const [selectedUser, setSelectedUser] = useState<UserField | null>(null);
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -37,6 +38,7 @@ export default function CustomerCreateForm({ users }: { users: UserField[] }) {
               onChange={(e) => {
                 const selectedUser = users.find((u) => u.id === e.target.value);
                 setEmail(selectedUser?.email ?? "");
+                setSelectedUser(selectedUser ?? null);
               }}
             >
               <option value="" disabled>
@@ -48,6 +50,7 @@ export default function CustomerCreateForm({ users }: { users: UserField[] }) {
                 </option>
               ))}
             </select>
+            <input type="hidden" name="name" value={selectedUser?.name ?? ""} />
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
           <div id="user-error" aria-live="polite" aria-atomic="true">
