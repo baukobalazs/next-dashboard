@@ -11,6 +11,7 @@ import { Button } from "./button";
 import { useActionState } from "react";
 import { signup } from "../lib/actions";
 import { error } from "console";
+import Link from "next/link";
 
 export default function SignUpForm() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -143,6 +144,13 @@ export default function SignUpForm() {
             </>
           )}
           {/* Add form errors here */}
+          <div className="mt-4 flex items-center space-x-1 text-sm">
+            <p>Already have an account? Click </p>
+            <Link className="text-blue-400" href={"/login"}>
+              here
+            </Link>
+            <p>to login</p>
+          </div>
         </div>
       </div>
     </form>

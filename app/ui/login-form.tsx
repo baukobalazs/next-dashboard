@@ -10,6 +10,7 @@ import { Button } from "./button";
 import { useActionState } from "react";
 import { authenticate } from "../lib/actions";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -82,6 +83,13 @@ export default function LoginForm() {
             </>
           )}
           {/* Add form errors here */}
+        </div>
+        <div className="mt-4 flex items-center space-x-1 text-sm">
+          <p>Don't have an account? Click </p>
+          <Link className="text-blue-400" href={"/signup"}>
+            here
+          </Link>
+          <p>to sign up</p>
         </div>
       </div>
     </form>
