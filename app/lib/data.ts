@@ -8,6 +8,7 @@ import {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
+  UserField,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { notFound } from 'next/navigation';
@@ -169,6 +170,15 @@ const MOCK_CUSTOMERS: CustomersTableType[] = [
     total_paid: 650000,
   },
 ];
+
+const MOCK_USERS: UserField[] = [
+  {
+    id: 'user1',
+    name: 'qwe',
+    email: 'qwe@qwe.com'
+ 
+  },
+]
 
 export async function fetchRevenue() {
   if (USE_MOCK || !sql) {
@@ -559,3 +569,29 @@ export async function fetchCustomersPages(query: string) {
   }
 }
 
+export async function fetchUsers() {
+  if (USE_MOCK || !sql) {
+    console.log('Using mock users...');
+    return MOCK_USERS.map(user => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }));
+  }
+
+  try {
+    const users = await sql<UserField[]>`
+      SELECT
+        id,
+        name,
+        email
+      FROM users
+      ORDER BY name ASC
+    `;
+
+    return users;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all users.');
+  }
+}
