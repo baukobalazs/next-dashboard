@@ -328,7 +328,7 @@ const CustomerFormSchema = z.object({
         switch (error.type){
           case 'CredentialsSignin': 
           return 'Invalid credentials.';
-          case 'EmailSignInError':
+          case 'Verification':
           return 'Email not verified. Please check your inbox.';
           default: 
             return 'Something went wrong.';
