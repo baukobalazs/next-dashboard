@@ -11,7 +11,7 @@ export type User = {
   email: string;
   password: string;
   role?: UserRole | string | undefined;
-  isverified?: boolean;
+  is_verified?: boolean;
 };
 
 export type Customer = {
