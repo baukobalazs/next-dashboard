@@ -520,7 +520,7 @@ export async function fetchFilteredCustomers(
 		FROM customers
 		LEFT JOIN invoices ON customers.id = invoices.customer_id
 		WHERE
-      customers.id ILIKE ${`%${query}%`} OR
+      customers.id::text ILIKE ${`%${query}%`} OR
 		  customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`}
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
