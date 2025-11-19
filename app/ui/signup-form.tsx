@@ -92,15 +92,12 @@ export default function SignUpForm() {
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
-          {state?.errors?.password && (
-            <div>
-              <ul>
-                {state.errors.password.map((error) => (
-                  <li className="text-sm text-red-500">{state.message}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {state?.errors?.password &&
+            state?.errors.password.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
           <div className="mt-4">
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
