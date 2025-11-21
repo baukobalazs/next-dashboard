@@ -146,6 +146,7 @@ export type InvoiceState = {
     customerId? : string[],
     amount? : string[], 
     status? : string[],
+    deadline?:  string[],
   };
   message?: string | null;
   
@@ -163,6 +164,7 @@ const InvoiceFormSchema = z.object({
       invalid_type_error: "Please select an invoice status"
     }),
     date: z.string(),
+    deadline: z.string(),
 })
 
 const CreateInvoice = InvoiceFormSchema.omit({id: true, date: true});
@@ -171,6 +173,7 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
         customerId: formdata.get('customerId'),
         amount: formdata.get('amount'),
         status: formdata.get('status'),
+        deadline: formdata.get('deadline'),
     })
     if(!validatedFields.success) {
       return {
@@ -178,15 +181,15 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
         message: "Missing fields. Failed to create invoice."
       }
     }
-    const {customerId, amount, status} = validatedFields.data;
+    const {customerId, amount, status, deadline} = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
   
     if(!USE_MOCK){
       try {
          await sql `
-    INSERT INTO invoices (customer_id, amount, status, date)
-    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+    INSERT INTO invoices (customer_id, amount, status, date, deadline)
+    VALUES (${customerId}, ${amountInCents}, ${status}, ${date}, ${deadline})
     `;
       } catch (error) {
         return {

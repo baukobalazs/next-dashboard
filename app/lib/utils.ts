@@ -29,7 +29,7 @@ export const generateYAxis = (revenue: Revenue[]) => {
   const yAxisLabels = [];
   const highestRecord = Math.max(...revenue.map((month) => month.revenue));
   
-  // Ha túl kicsi az érték, használj kisebb lépéseket
+ 
   let step = 1000;
   if (highestRecord < 5000) {
     step = 500;

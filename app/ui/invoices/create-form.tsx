@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
 import { createInvoice, InvoiceState } from "@/app/lib/actions";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { error } from "console";
 
 export default function CreateInvoiceForm({
@@ -20,6 +20,9 @@ export default function CreateInvoiceForm({
 }) {
   const initialState: InvoiceState = { message: null, errors: {} };
   const [state, formAction] = useActionState(createInvoice, initialState);
+  const [deadline, setDeadline] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -79,6 +82,35 @@ export default function CreateInvoiceForm({
           <div id="amount-error" aria-live="polite" aria-atomic="true">
             {state.errors?.amount &&
               state.errors.amount.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="deadline" className="mb-2 block text-sm font-medium">
+            Deadline
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                type="deadline"
+                id="deadline"
+                name="deadline"
+                value={deadline}
+                min={new Date().toISOString().split("T")[0]}
+                max="2030-12-31"
+                onChange={(e) => {
+                  setDeadline(e.target.value);
+                }}
+                placeholder={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+          </div>
+          <div id="date-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.deadline &&
+              state.errors.deadline.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>
