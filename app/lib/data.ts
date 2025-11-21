@@ -177,11 +177,26 @@ const MOCK_CUSTOMERS: CustomersTableType[] = [
     total_pending: 0,
     total_paid: 650000,
   },
+    {
+    id: 'user1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    total_invoices: 2,
+    total_pending: 375000,
+    total_paid: 120000,
+  },
 ];
 
 const MOCK_USERS: UserField[] = [
   {
     id: 'user1',
+    name: 'asd',
+    email: 'qwe@qwe.com'
+ 
+  },
+   {
+    id: 'user2',
     name: 'qwe',
     email: 'qwe@qwe.com'
  

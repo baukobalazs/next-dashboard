@@ -5,6 +5,7 @@ import CustomerCreateForm from "@/app/ui/customers/create-form";
 
 export default async function Page() {
   const users = await fetchUsers();
+  const customers = await fetchCustomers();
 
   return (
     <main>
@@ -18,7 +19,7 @@ export default async function Page() {
           },
         ]}
       />
-      <CustomerCreateForm users={users} />
+      <CustomerCreateForm users={users} customers={customers} />
     </main>
   );
 }

@@ -1,13 +1,20 @@
 "use client";
 
-import { UserField } from "@/app/lib/definitions";
+import { CustomerField, UserField } from "@/app/lib/definitions";
 import Link from "next/link";
 import { AtSymbolIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
 import { createCustomer, CustomerState } from "@/app/lib/actions";
 import { useActionState, useState } from "react";
+import { fetchCustomerById } from "@/app/lib/data";
 
-export default function CustomerCreateForm({ users }: { users: UserField[] }) {
+export default function CustomerCreateForm({
+  users,
+  customers,
+}: {
+  users: UserField[];
+  customers: CustomerField[];
+}) {
   const initialState: CustomerState = { message: null, errors: {} };
   const [state, formAction] = useActionState(createCustomer, initialState);
   const [email, setEmail] = useState("");
@@ -36,11 +43,18 @@ export default function CustomerCreateForm({ users }: { users: UserField[] }) {
               <option value="" disabled>
                 Select a user
               </option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
+              {users.map((user) => {
+                const customer = customers.filter(
+                  (customer) => customer.id === user.id
+                );
+                if (customer.length === 0) {
+                  return (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  );
+                }
+              })}
             </select>
             <input type="hidden" name="name" value={selectedUser?.name ?? ""} />
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
