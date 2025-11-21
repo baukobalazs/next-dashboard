@@ -17,13 +17,13 @@ export default function CustomerCreateForm({ users }: { users: UserField[] }) {
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* User Name */}
         <div className="mb-4">
-          <label htmlFor="user" className="mb-2 block text-sm font-medium">
+          <label htmlFor="id" className="mb-2 block text-sm font-medium">
             Name
           </label>
           <div className="relative">
             <select
-              id="user"
-              name="userId"
+              id="id"
+              name="id"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
               aria-describedby="user-error"

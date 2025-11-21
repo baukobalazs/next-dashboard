@@ -149,7 +149,9 @@ export default async function InvoicesTable({
       </div>
     );
   } else {
-    const invoicesbyid = invoices.filter((id: any) => id === session?.user.id);
+    const invoicesbyid = invoices.filter(
+      (invoice: any) => invoice.customer_id === session?.user.id
+    );
     return (
       <div className="mt-6 flow-root">
         <div className="inline-block min-w-full align-middle">

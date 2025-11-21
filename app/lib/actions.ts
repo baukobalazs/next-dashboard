@@ -345,9 +345,10 @@ const CustomerFormSchema = z.object({
   }
 
  
-const CreateCustomer = CustomerFormSchema.omit({id: true});
+const CreateCustomer = CustomerFormSchema.omit({});
 export async function createCustomer(prevState : CustomerState,formdata: FormData){
     const validatedFields = CreateCustomer.safeParse({
+        id: formdata.get('id'),
         name: formdata.get('name'),
         email: formdata.get('email'),
     })
@@ -357,7 +358,7 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
         message: "Missing fields. Failed to create customer."
       }
     }
-    const { name, email} = validatedFields.data;
+    const {id, name, email} = validatedFields.data;
   
     if(!USE_MOCK){
       try {
@@ -371,8 +372,8 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
           }
         }
          await sql `
-    INSERT INTO customers (name, email, image_url)
-    VALUES (${name}, ${email}, '/customers/defaultProfile.png')
+    INSERT INTO customers (id, name, email, image_url)
+    VALUES (${id}, ${name}, ${email}, '/customers/defaultProfile.png')
     `;
       } catch (error) {
         return {
