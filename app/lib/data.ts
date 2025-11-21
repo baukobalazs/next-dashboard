@@ -182,21 +182,27 @@ const MOCK_USERS: UserField[] = [
 
 export async function fetchRevenue() {
   if (USE_MOCK || !sql) {
-    console.log('Using mock revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     return MOCK_REVENUE;
   }
 
   try {
-    console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`; 
-    console.log('Data fetch completed after 3 seconds.');
-    return data;
+    const data = await sql`
+      SELECT 
+        DATE_TRUNC('month', date) AS month,
+        SUM(amount) AS revenue
+      FROM invoices
+      WHERE status = 'paid'
+      GROUP BY month
+      ORDER BY month;
+    `;
+
+    return data.map((row: any) => ({
+      month: row.month.toISOString().slice(0, 7), // pl. "2025-01"
+      revenue: Number(row.revenue),
+    }));
   } catch (error) {
     console.error('Database Error:', error);
-    console.log('Falling back to mock data');
-    return MOCK_REVENUE;
+    throw new Error('Failed to fetch revenue data.');
   }
 }
 
@@ -327,6 +333,7 @@ export async function fetchFilteredInvoices(
 
     return invoices;
   } catch (error) {
+
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoices.');
   }
@@ -418,7 +425,7 @@ export async function fetchCustomerById(id: string) {
     
     if (!customer) {
       notFound();
-      throw new Error('Customer not found');
+    
     }
   
     return {
