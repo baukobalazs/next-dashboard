@@ -12,6 +12,7 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { notFound } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
 
@@ -243,11 +244,13 @@ export async function fetchLatestInvoices() {
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
+    revalidatePath('/dashboard');
     return latestInvoices;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the latest invoices.');
   }
+  
 }
 
 export async function fetchCardData() {
