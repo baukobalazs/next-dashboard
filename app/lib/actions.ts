@@ -1,5 +1,5 @@
 'use server'
-import {z} from 'zod'
+import {nullable, z} from 'zod'
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -8,6 +8,7 @@ import { AuthError } from 'next-auth';
 import bcrypt, { compare } from 'bcryptjs';
 import { Resend } from "resend";
 import crypto from "crypto";
+import { stat } from 'fs';
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -164,7 +165,7 @@ const InvoiceFormSchema = z.object({
       invalid_type_error: "Please select an invoice status"
     }),
     date: z.string(),
-    deadline: z.string(),
+    deadline: z.string().optional().nullable(),
 })
 
 const CreateInvoice = InvoiceFormSchema.omit({id: true, date: true});
@@ -181,11 +182,14 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
         message: "Missing fields. Failed to create invoice."
       }
     }
-    const {customerId, amount, status, deadline} = validatedFields.data;
+    let {customerId, amount, status, deadline} = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
   
     if(!USE_MOCK){
+      if(status === 'paid'){
+        deadline=null;
+      }
       try {
          await sql `
     INSERT INTO invoices (customer_id, amount, status, date, deadline)
