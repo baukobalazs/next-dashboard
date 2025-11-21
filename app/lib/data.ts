@@ -327,7 +327,7 @@ export async function fetchFilteredInvoices(
         invoices.id,
         invoices.amount,
         invoices.date,
-        invoices.deadline,
+       
         invoices.status,
         customers.name,
         customers.email,
