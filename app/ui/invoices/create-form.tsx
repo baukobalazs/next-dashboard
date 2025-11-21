@@ -95,7 +95,7 @@ export default function CreateInvoiceForm({
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                type="deadline"
+                type="date"
                 id="deadline"
                 name="deadline"
                 value={deadline}
