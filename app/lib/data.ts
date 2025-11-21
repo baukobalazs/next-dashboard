@@ -60,7 +60,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-15',
     amount: 375000,
     status: 'pending',
-    deadline: '2025-12-31'
+    deadline: '2025-02-31'
   },
   {
     id: '2',
@@ -71,6 +71,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-10',
     amount: 250000,
     status: 'paid',
+    deadline: ''
   },
   {
     id: '3',
@@ -81,6 +82,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-08',
     amount: 125000,
     status: 'paid',
+    deadline: ''
   },
   {
     id: '4',
@@ -102,6 +104,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-03',
     amount: 650000,
     status: 'paid',
+    deadline: ''
   },
   {
     id: '6',
@@ -112,6 +115,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2023-12-20',
     amount: 120000,
     status: 'paid',
+    deadline: ''
   },
   {
     id: '7',

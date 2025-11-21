@@ -165,7 +165,7 @@ const InvoiceFormSchema = z.object({
       invalid_type_error: "Please select an invoice status"
     }),
     date: z.string(),
-    deadline: z.string().optional().nullable(),
+    deadline: z.string(),
 })
 
 const CreateInvoice = InvoiceFormSchema.omit({id: true, date: true});
@@ -188,7 +188,7 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
   
     if(!USE_MOCK){
       if(status === 'paid'){
-        deadline=null;
+        deadline="";
       }
       try {
          await sql `
