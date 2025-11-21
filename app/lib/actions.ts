@@ -232,6 +232,7 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
       }
   
     }
+    revalidatePath('/dashboard');
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
   }
