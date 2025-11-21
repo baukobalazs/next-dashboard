@@ -188,17 +188,23 @@ export async function fetchRevenue() {
   try {
     const data = await sql`
       SELECT 
-        DATE_TRUNC('month', date) AS month,
+        TO_CHAR(date, 'YYYY-MM') AS month,
         SUM(amount) AS revenue
       FROM invoices
       WHERE status = 'paid'
-      GROUP BY month
-      ORDER BY month;
+      GROUP BY TO_CHAR(date, 'YYYY-MM')
+      ORDER BY TO_CHAR(date, 'YYYY-MM') ASC;
     `;
 
+    console.log('Revenue data from DB:', data);
+
+    if (data.length === 0) {
+      return MOCK_REVENUE;
+    }
+
     return data.map((row: any) => ({
-      month: row.month.toISOString().slice(0, 7), // pl. "2025-01"
-      revenue: Number(row.revenue),
+      month: row.month, 
+      revenue: Number(row.revenue) / 100,
     }));
   } catch (error) {
     console.error('Database Error:', error);

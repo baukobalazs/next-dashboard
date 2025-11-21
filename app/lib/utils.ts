@@ -22,14 +22,30 @@ export const formatDateToLocal = (
 };
 
 export const generateYAxis = (revenue: Revenue[]) => {
-  // Calculate what labels we need to display on the y-axis
-  // based on highest record and in 1000s
+  if (!revenue || revenue.length === 0) {
+    return { yAxisLabels: ['$0K'], topLabel: 1000 };
+  }
+
   const yAxisLabels = [];
   const highestRecord = Math.max(...revenue.map((month) => month.revenue));
-  const topLabel = Math.ceil(highestRecord / 1000) * 1000;
+  
+  // Ha túl kicsi az érték, használj kisebb lépéseket
+  let step = 1000;
+  if (highestRecord < 5000) {
+    step = 500;
+  }
+  if (highestRecord < 1000) {
+    step = 100;
+  }
 
-  for (let i = topLabel; i >= 0; i -= 1000) {
-    yAxisLabels.push(`$${i / 1000}K`);
+  const topLabel = Math.ceil(highestRecord / step) * step;
+
+  for (let i = topLabel; i >= 0; i -= step) {
+    if (step >= 1000) {
+      yAxisLabels.push(`$${i / 1000}K`);
+    } else {
+      yAxisLabels.push(`$${i}`);
+    }
   }
 
   return { yAxisLabels, topLabel };
