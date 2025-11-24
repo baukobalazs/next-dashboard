@@ -58,7 +58,7 @@ export type InvoicesTable = {
   date: string;
   amount: number;
   status: 'pending' | 'paid';
-  deadline: string;
+  deadline: string| null;
 };
 
 export type CustomersTableType = {
@@ -97,6 +97,7 @@ export type InvoiceForm = {
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
+  deadline: string | null;
 };
 
 export type CustomerEditForm = {
