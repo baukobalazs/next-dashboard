@@ -148,7 +148,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     image_url: '/customers/delba-de-oliveira.png',
     date: '2023-12-15',
     amount: 3402300,
-    status: 'pending',
+    status: 'paid',
      deadline: '2025-12-31'
   },
 ];

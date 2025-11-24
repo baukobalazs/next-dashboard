@@ -1,6 +1,8 @@
 import "@/app/ui/global.css";
 import { inter } from "./ui/fonts";
 import { Metadata } from "next";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import ThemeRegistry from "./ThemeRegistry";
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        <AppRouterCacheProvider options={{ key: "css" }}>
+          <ThemeRegistry>{children}</ThemeRegistry>
+        </AppRouterCacheProvider>
+      </body>
     </html>
   );
 }

@@ -270,11 +270,22 @@ export default async function InvoicesTable({
                     ) : (
                       <td className="whitespace-nowrap px-3 py-3"></td>
                     )}
-                    <td className="whitespace-nowrap  text-blue-800 text-center  py-3">
-                      <Link href={`/dashboard/invoices/${invoice.id}`}>
-                        Show more
-                      </Link>
-                    </td>
+                    {session?.user.role === "admin" ? (
+                      <td className="whitespace-nowrap  text-blue-800 text-center  py-3">
+                        <Link href={`/dashboard/invoices/${invoice.id}`}>
+                          Show more
+                        </Link>
+                      </td>
+                    ) : (
+                      invoice.status === "pending" && (
+                        <td className="whitespace-nowrap  text-blue-800 text-center  py-3">
+                          <Link href={`/dashboard/invoices/${invoice.id}`}>
+                            Payment
+                          </Link>
+                        </td>
+                      )
+                    )}
+
                     <td className="whitespace-nowrap py-3  pr-3">
                       {session?.user.role === "admin" && (
                         <div className="flex justify-end gap-3">
