@@ -369,7 +369,7 @@ export async function fetchFilteredInvoices(
 
   try {
      const whereClause = role !== 'admin' 
-      ? sql`AND customers.id = ${id}` 
+      ? sql`AND invoices.customer_id = ${id}` 
       : sql``;
     const invoices = await sql<InvoicesTable[]>`
       SELECT
