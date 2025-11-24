@@ -11,7 +11,6 @@ import {
 import { Button } from "@/app/ui/button";
 import { createInvoice, InvoiceState } from "@/app/lib/actions";
 import { useActionState, useState } from "react";
-import { error } from "console";
 
 export default function CreateInvoiceForm({
   customers,
@@ -23,6 +22,7 @@ export default function CreateInvoiceForm({
   const [deadline, setDeadline] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [status, setStatus] = useState<"pending" | "paid">("pending");
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -88,35 +88,6 @@ export default function CreateInvoiceForm({
               ))}
           </div>
         </div>
-        <div className="mb-4">
-          <label htmlFor="deadline" className="mb-2 block text-sm font-medium">
-            Deadline
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                type="date"
-                id="deadline"
-                name="deadline"
-                value={deadline}
-                min={new Date().toISOString().split("T")[0]}
-                max="2030-12-31"
-                onChange={(e) => {
-                  setDeadline(e.target.value);
-                }}
-                placeholder={new Date().toISOString().split("T")[0]}
-              />
-            </div>
-          </div>
-          <div id="date-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.deadline &&
-              state.errors.deadline.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
 
         {/* Invoice Status */}
         <fieldset>
@@ -133,6 +104,8 @@ export default function CreateInvoiceForm({
                   value="pending"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
+                  onChange={() => setStatus("pending")}
+                  defaultChecked
                 />
                 <label
                   htmlFor="pending"
@@ -149,6 +122,9 @@ export default function CreateInvoiceForm({
                   value="paid"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
+                  onChange={() => {
+                    setStatus("paid");
+                  }}
                 />
                 <label
                   htmlFor="paid"
@@ -168,6 +144,41 @@ export default function CreateInvoiceForm({
             </div>
           </div>
         </fieldset>
+        {/* Deadline -if pending*/}
+        {status === "pending" && (
+          <div className="mb-4 mt-4">
+            <label
+              htmlFor="deadline"
+              className="mb-2 block text-sm font-medium"
+            >
+              Deadline
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  type="date"
+                  id="deadline"
+                  name="deadline"
+                  value={deadline}
+                  min={new Date().toISOString().split("T")[0]}
+                  max="2030-12-31"
+                  onChange={(e) => {
+                    setDeadline(e.target.value);
+                  }}
+                  placeholder={new Date().toISOString().split("T")[0]}
+                />
+              </div>
+            </div>
+            <div id="date-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.deadline &&
+                state.errors.deadline.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link

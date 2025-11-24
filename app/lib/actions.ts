@@ -165,7 +165,7 @@ const InvoiceFormSchema = z.object({
       invalid_type_error: "Please select an invoice status"
     }),
     date: z.string(),
-    deadline: z.string(),
+    deadline: z.string().optional().nullable(),
 })
 
 const CreateInvoice = InvoiceFormSchema.omit({id: true, date: true});
@@ -174,7 +174,7 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
         customerId: formdata.get('customerId'),
         amount: formdata.get('amount'),
         status: formdata.get('status'),
-        deadline: formdata.get('deadline'),
+        deadline: formdata.get('deadline') ||null,
     })
     if(!validatedFields.success) {
       return {
@@ -185,15 +185,15 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
     let {customerId, amount, status, deadline} = validatedFields.data;
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
-  
+    const finalDeadline = status === 'paid' ? null : deadline
     if(!USE_MOCK){
       if(status === 'paid'){
-        deadline="";
+        deadline=null;
       }
       try {
          await sql `
     INSERT INTO invoices (customer_id, amount, status, date, deadline)
-    VALUES (${customerId}, ${amountInCents}, ${status}, ${date}, ${deadline})
+    VALUES (${customerId}, ${amountInCents}, ${status}, ${date}, ${finalDeadline})
     `;
       } catch (error) {
         return {
@@ -214,6 +214,7 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
       customerId: formdata.get('customerId'),
       amount: formdata.get('amount'),
       status: formdata.get('status'),
+       deadline: formdata.get('deadline') || null,
     })
 
     if(!validatedFields.success){
@@ -222,14 +223,14 @@ export async function createInvoice(prevState : InvoiceState,formdata: FormData)
         message: "Missing fields. Failed to update invoice."
       }
     }
-    const {customerId, amount, status} = validatedFields.data;
+    const {customerId, amount, status, deadline} = validatedFields.data;
     const amountInCents = amount * 100;
-
+      const finalDeadline = status === 'paid' ? null : deadline
     if(!USE_MOCK){
       try {
           await sql`
       UPDATE invoices 
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}, deadline = ${finalDeadline}
       WHERE id = ${id}
     `;
       } catch (error) {

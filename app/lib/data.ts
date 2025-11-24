@@ -61,7 +61,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-15',
     amount: 375000,
     status: 'pending',
-    deadline: '2025-02-31'
+    deadline: '2025-12-25'
   },
   {
     id: '2',
@@ -72,7 +72,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-10',
     amount: 250000,
     status: 'paid',
-    deadline: ''
+    deadline: null
   },
   {
     id: '3',
@@ -83,7 +83,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-08',
     amount: 125000,
     status: 'paid',
-    deadline: ''
+    deadline: null
   },
   {
     id: '4',
@@ -94,7 +94,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-05',
     amount: 854600,
     status: 'pending',
-     deadline: '2025-02-31'
+     deadline: '2025-12-31'
   },
   {
     id: '5',
@@ -105,7 +105,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2024-01-03',
     amount: 650000,
     status: 'paid',
-    deadline: ''
+    deadline: null
   },
   {
     id: '6',
@@ -116,7 +116,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     date: '2023-12-20',
     amount: 120000,
     status: 'paid',
-    deadline: ''
+    deadline: null
   },
   {
     id: '7',
@@ -421,6 +421,7 @@ export async function fetchInvoiceById(id: string) {
       customer_id: invoice.customer_id,
       amount: invoice.amount / 100, 
       status: invoice.status,
+      deadline : invoice.deadline,
     };
   }
 
@@ -430,7 +431,8 @@ export async function fetchInvoiceById(id: string) {
         invoices.id,
         invoices.customer_id,
         invoices.amount,
-        invoices.status
+        invoices.status, 
+        invoices.deadline
       FROM invoices
       WHERE invoices.id = ${id};
     `;

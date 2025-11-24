@@ -10,7 +10,8 @@ import {
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { InvoiceState, updateInvoice } from "@/app/lib/actions";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { formatDateToLocal } from "@/app/lib/utils";
 
 export default function EditInvoiceForm({
   invoice,
@@ -22,6 +23,8 @@ export default function EditInvoiceForm({
   const initialState: InvoiceState = { message: null, errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
   const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  const [deadline, setDeadline] = useState(invoice.deadline);
+  const [status, setStatus] = useState<"pending" | "paid">("pending");
   return (
     <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -105,6 +108,7 @@ export default function EditInvoiceForm({
                   defaultChecked={invoice.status === "pending"}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
+                  onChange={() => setStatus("pending")}
                 />
                 <label
                   htmlFor="pending"
@@ -122,6 +126,7 @@ export default function EditInvoiceForm({
                   defaultChecked={invoice.status === "paid"}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
+                  onChange={() => setStatus("paid")}
                 />
                 <label
                   htmlFor="paid"
@@ -141,6 +146,40 @@ export default function EditInvoiceForm({
             </div>
           </div>
         </fieldset>
+        {/* Deadline - if pending */}
+        {status === "pending" && (
+          <div className="mb-4">
+            <label
+              htmlFor="deadline"
+              className="mb-2 block text-sm font-medium"
+            >
+              Deadline
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  type="date"
+                  id="deadline"
+                  name="deadline"
+                  value={deadline!}
+                  min={new Date().toISOString().split("T")[0]}
+                  max="2030-12-31"
+                  onChange={(e) => {
+                    setDeadline(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div id="date-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.deadline &&
+                state.errors.deadline.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
