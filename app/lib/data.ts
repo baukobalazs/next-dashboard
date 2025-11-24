@@ -339,7 +339,7 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 1;
+const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredInvoices(
   query: string,
@@ -431,11 +431,11 @@ export async function fetchInvoicesPages(query: string, id?:string, role?: strin
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
+      (customers.name ILIKE ${`%${query}%`} OR
       customers.email ILIKE ${`%${query}%`} OR
       invoices.amount::text ILIKE ${`%${query}%`} OR
       invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+      invoices.status ILIKE ${`%${query}%`})
       ${whereClause}
   `;
 
