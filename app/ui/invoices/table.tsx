@@ -14,8 +14,14 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
   const session = await auth();
+  const invoices = await fetchFilteredInvoices(
+    query,
+    currentPage,
+    session?.user.id,
+    session?.user.role
+  );
+
   if (session?.user.role === "admin") {
     return (
       <div className="mt-6 flow-root">

@@ -129,6 +129,17 @@ const MOCK_INVOICES: InvoicesTable[] = [
     status: 'pending',
      deadline: '2025-12-31'
   },
+   {
+    id: '8',
+    customer_id: '230564b2-4001-4271-9855-fec4b6a6432c',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2023-12-15',
+    amount: 340000,
+    status: 'pending',
+     deadline: '2025-12-31'
+  },
 ];
 
 const MOCK_CUSTOMERS: CustomersTableType[] = [
@@ -322,6 +333,8 @@ const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
+  id? : string,
+  role?: string,
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
@@ -335,11 +348,18 @@ export async function fetchFilteredInvoices(
       invoice.email.toLowerCase().includes(lowerQuery) 
     
     );
-    
+    if(role === 'admin'){
     return filtered.slice(offset, offset + ITEMS_PER_PAGE);
+    } else{
+      const userFiltered = filtered.filter((invoice) => invoice.customer_id === id);
+      return userFiltered.slice(offset, offset + ITEMS_PER_PAGE);
+    }
   }
 
   try {
+     const whereClause = role !== 'admin' 
+      ? sql`AND customers.id = ${id}` 
+      : sql``;
     const invoices = await sql<InvoicesTable[]>`
       SELECT
         invoices.id,
@@ -353,12 +373,13 @@ export async function fetchFilteredInvoices(
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE
-        invoices.id::text ILIKE ${`%${query}%`} OR
+        (invoices.id::text ILIKE ${`%${query}%`} OR
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
         invoices.amount::text ILIKE ${`%${query}%`} OR
         invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
+        invoices.status ILIKE ${`%${query}%`})
+        ${whereClause}
       ORDER BY invoices.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
