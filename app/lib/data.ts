@@ -147,7 +147,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
     email: 'delba@oliveira.com',
     image_url: '/customers/delba-de-oliveira.png',
     date: '2023-12-15',
-    amount: 340000,
+    amount: 3402300,
     status: 'pending',
      deadline: '2025-12-31'
   },
@@ -339,7 +339,7 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 1;
 
 export async function fetchFilteredInvoices(
   query: string,
@@ -425,7 +425,7 @@ export async function fetchInvoicesPages(query: string, id?:string, role?: strin
 
   try {
       const whereClause = role !== 'admin' 
-      ? sql`AND customers.id = ${id}` 
+      ? sql`AND invoices.customer_id = ${id}` 
       : sql``;
     const data = await sql`SELECT COUNT(*)
     FROM invoices
