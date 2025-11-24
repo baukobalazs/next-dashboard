@@ -140,6 +140,17 @@ const MOCK_INVOICES: InvoicesTable[] = [
     status: 'pending',
      deadline: '2025-12-31'
   },
+    {
+    id: '9',
+    customer_id: '230564b2-4001-4271-9855-fec4b6a6432c',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2023-12-15',
+    amount: 340000,
+    status: 'pending',
+     deadline: '2025-12-31'
+  },
 ];
 
 const MOCK_CUSTOMERS: CustomersTableType[] = [
@@ -392,7 +403,7 @@ export async function fetchFilteredInvoices(
   }
 }
 
-export async function fetchInvoicesPages(query: string) {
+export async function fetchInvoicesPages(query: string, id?:string, role?: string) {
   if (USE_MOCK || !sql) {
     console.log('Using mock invoice pages...');
     const lowerQuery = query.toLowerCase();
@@ -404,11 +415,18 @@ export async function fetchInvoicesPages(query: string) {
       invoice.date.includes(query) ||
       invoice.status.toLowerCase().includes(lowerQuery)
     );
-    
+    if(role === 'admin'){
     return Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    } else {
+      const userFiltered = filtered.filter((invoice) => invoice.customer_id === id);
+      return Math.ceil(userFiltered.length / ITEMS_PER_PAGE);
+    }
   }
 
   try {
+      const whereClause = role !== 'admin' 
+      ? sql`AND customers.id = ${id}` 
+      : sql``;
     const data = await sql`SELECT COUNT(*)
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
@@ -418,6 +436,7 @@ export async function fetchInvoicesPages(query: string) {
       invoices.amount::text ILIKE ${`%${query}%`} OR
       invoices.date::text ILIKE ${`%${query}%`} OR
       invoices.status ILIKE ${`%${query}%`}
+      ${whereClause}
   `;
 
     const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
