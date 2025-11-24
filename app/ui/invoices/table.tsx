@@ -107,7 +107,6 @@ export default async function InvoicesTable({
                         <p>{invoice.name}</p>
                       </div>
                     </td>
-
                     <td className="whitespace-nowrap px-3 py-3">
                       {invoice.email}
                     </td>
@@ -120,12 +119,15 @@ export default async function InvoicesTable({
                     <td className="whitespace-nowrap px-3 py-3">
                       <InvoiceStatus status={invoice.status} />
                     </td>
+
                     {invoice.deadline ? (
                       <td className="whitespace-nowrap px-3 py-3">
-                        {invoice.deadline}
+                        {formatDateToLocal(invoice.deadline)}
                       </td>
                     ) : (
-                      <td className="whitespace-nowrap px-3 py-3"></td>
+                      <td className="whitespace-nowrap px-3 py-3 text-gray-400">
+                        No deadline
+                      </td>
                     )}
                     <td className="whitespace-nowrap  text-blue-800 text-center  py-3">
                       <Link href={`/dashboard/invoices/${invoice.id}`}>

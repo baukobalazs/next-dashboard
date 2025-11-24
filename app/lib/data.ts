@@ -346,6 +346,7 @@ export async function fetchFilteredInvoices(
         invoices.amount,
         invoices.date,
         invoices.status,
+        COALESCE(invoices.deadline::text, '') as deadline,
         customers.name,
         customers.email,
         customers.image_url
