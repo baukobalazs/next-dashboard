@@ -5,6 +5,8 @@ import clsx from "clsx";
 import Link from "next/link";
 import { generatePagination } from "@/app/lib/utils";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useContext } from "react";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathName = usePathname();
@@ -17,7 +19,8 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     return `${pathName}?${params.toString()}`;
   };
   const allPages = generatePagination(currentPage, totalPages);
-
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
   return (
     <>
       <div className="inline-flex">
@@ -69,15 +72,25 @@ function PaginationNumber({
   position?: "first" | "last" | "middle" | "single";
   isActive: boolean;
 }) {
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
   const className = clsx(
     "flex h-10 w-10 items-center justify-center text-sm border",
-    {
-      "rounded-l-md": position === "first" || position === "single",
-      "rounded-r-md": position === "last" || position === "single",
-      "z-10 bg-blue-600 border-blue-600 text-white": isActive,
-      "hover:bg-gray-100": !isActive && position !== "middle",
-      "text-gray-300": position === "middle",
-    }
+    isDark
+      ? {
+          "rounded-l-md": position === "first" || position === "single",
+          "rounded-r-md": position === "last" || position === "single",
+          "z-10 bg-gray-500 border-gray-100 text-white": isActive,
+          "hover:bg-gray-500": !isActive && position !== "middle",
+          "text-gray-200": position === "middle",
+        }
+      : {
+          "rounded-l-md": position === "first" || position === "single",
+          "rounded-r-md": position === "last" || position === "single",
+          "z-10 bg-blue-600 border-blue-600 text-white": isActive,
+          "hover:bg-gray-100": !isActive && position !== "middle",
+          "text-gray": position === "middle",
+        }
   );
 
   return isActive || position === "middle" ? (
@@ -98,14 +111,23 @@ function PaginationArrow({
   direction: "left" | "right";
   isDisabled?: boolean;
 }) {
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
   const className = clsx(
     "flex h-10 w-10 items-center justify-center rounded-md border",
-    {
-      "pointer-events-none text-gray-300": isDisabled,
-      "hover:bg-gray-100": !isDisabled,
-      "mr-2 md:mr-4": direction === "left",
-      "ml-2 md:ml-4": direction === "right",
-    }
+    isDark
+      ? {
+          "pointer-events-none text-gray-300": isDisabled,
+          "hover:bg-gray-500": !isDisabled,
+          "mr-2 md:mr-4": direction === "left",
+          "ml-2 md:ml-4": direction === "right",
+        }
+      : {
+          "pointer-events-none text-gray-300": isDisabled,
+          "hover:bg-gray-100": !isDisabled,
+          "mr-2 md:mr-4": direction === "left",
+          "ml-2 md:ml-4": direction === "right",
+        }
   );
 
   const icon =

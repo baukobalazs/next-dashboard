@@ -3,7 +3,9 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import path from "path";
+import { useContext } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { ThemeContext } from "../ThemeRegistry";
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
   const pathName = usePathname();
@@ -20,13 +22,19 @@ export default function Search({ placeholder }: { placeholder: string }) {
     }
     replace(`${pathName}?${params.toString()}`);
   }, 300);
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
   return (
     <div className="relative flex flex-1 flex-shrink-0">
       <label htmlFor="search" className="sr-only">
         Search
       </label>
       <input
-        className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+        className={`peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 ${
+          isDark
+            ? "placeholder:text-gray-50 text-gray-50 bg-gray-800"
+            : "placeholder:text-gray-500 text-gray-800"
+        }`}
         placeholder={placeholder}
         onChange={(e) => {
           handleSearch(e.target.value);

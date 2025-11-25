@@ -10,7 +10,7 @@ import {
 import CardWrapperServer from "@/app/ui/dashboard/CardWrapperServer";
 import RevenueChartServer from "@/app/ui/dashboard/RevenueChartServer";
 import LatestInvoicesServer from "@/app/ui/dashboard/LatestInvoicesServer";
-export default async function Page() {
+export default function Page() {
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>

@@ -9,6 +9,7 @@ import { fetchInvoicesPages } from "@/app/lib/data";
 import { Metadata } from "next";
 import InvoicesTable from "@/app/ui/invoices/table";
 import { auth } from "@/auth";
+import InvoicesTableServer from "@/app/ui/invoices/InvoicesTableServer";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -36,7 +37,7 @@ export default async function Page(props: {
         {session?.user.role === "admin" && <CreateInvoice />}
       </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <InvoicesTable query={query} currentPage={currentPage} />
+        <InvoicesTableServer query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
