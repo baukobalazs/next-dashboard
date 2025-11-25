@@ -10,6 +10,7 @@ import { Metadata } from "next";
 import { CreateCustomer } from "@/app/ui/customers/buttons";
 import CustomersTable from "@/app/ui/customers/table";
 import { auth } from "@/auth";
+import CustomersTableServer from "@/app/ui/customers/CustomersTableServer";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -35,7 +36,7 @@ export default async function Page(props: {
         {session?.user.role === "admin" && <CreateCustomer />}
       </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <CustomersTable query={query} currentPage={currentPage} />
+        <CustomersTableServer query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

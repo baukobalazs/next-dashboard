@@ -10,7 +10,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
 import { createInvoice, InvoiceState } from "@/app/lib/actions";
-import { useActionState, useState } from "react";
+import { useActionState, useContext, useState } from "react";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 export default function CreateInvoiceForm({
   customers,
@@ -23,9 +24,19 @@ export default function CreateInvoiceForm({
     new Date().toISOString().split("T")[0]
   );
   const [status, setStatus] = useState<"pending" | "paid">("pending");
+
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const textColor = isDark ? "text-gray-100" : "text-gray-900";
+  const textSubtle = isDark ? "text-gray-400" : "text-gray-500";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
+
+  const linkColor = isDark ? "text-blue-200" : "text-blue-800";
   return (
     <form action={formAction}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+      <div
+        className={`rounded-md transition-colors ${bg} border border-gray-200 p-4 md:p-6`}
+      >
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
@@ -35,7 +46,7 @@ export default function CreateInvoiceForm({
             <select
               id="customer"
               name="customerId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              className={`peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${bg}`}
               defaultValue=""
               aria-describedby="customer-error"
             >
@@ -73,7 +84,7 @@ export default function CreateInvoiceForm({
                 type="number"
                 step="0.01"
                 placeholder="Enter USD amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className={`peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${bg}`}
                 aria-describedby="amount-error"
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -94,7 +105,9 @@ export default function CreateInvoiceForm({
           <legend className="mb-2 block text-sm font-medium">
             Set the invoice status
           </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+          <div
+            className={`rounded-md border border-gray-200 px-[14px] py-3  ${bg}`}
+          >
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
@@ -156,6 +169,7 @@ export default function CreateInvoiceForm({
             <div className="relative mt-2 rounded-md">
               <div className="relative">
                 <input
+                  className={`${bg}`}
                   type="date"
                   id="deadline"
                   name="deadline"

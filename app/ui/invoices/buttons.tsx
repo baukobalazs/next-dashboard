@@ -18,7 +18,7 @@ export function UpdateInvoice({ id }: { id: string }) {
   return (
     <Link
       href={`/dashboard/invoices/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-green-500"
+      className="rounded-md border p-2 hover:bg-blue-500"
     >
       <PencilIcon className="w-5" />
     </Link>

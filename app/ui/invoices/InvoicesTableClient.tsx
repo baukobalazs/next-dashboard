@@ -22,8 +22,8 @@ const InvoicesTableClient = ({
 
   const textColor = isDark ? "text-gray-100" : "text-gray-900";
   const textSubtle = isDark ? "text-gray-400" : "text-gray-500";
-  const bgMain = isDark ? "bg-gray-900" : "bg-white";
-  const bgRow = isDark ? "bg-gray-900" : "bg-white";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
+  const rowBorder = isDark ? "border-gray-700" : "border-gray-200";
   const linkColor = isDark ? "text-blue-200" : "text-blue-800";
 
   const isAdmin = session?.user.role === "admin";
@@ -32,8 +32,10 @@ const InvoicesTableClient = ({
     <div className="mt-6 flow-root ">
       <div className="inline-block  min-w-full align-middle">
         <div
-          className={`px-6 transition-colors ${bgMain} ${textColor} 
-  border border-gray-500 rounded-xl shadow-sm`}
+          className={`px-6 transition-colors ${bg} ${textColor} 
+  border ${
+    isDark ? "border-gray-500" : "border-gray-300"
+  }  rounded-xl shadow-sm`}
         >
           {/* mobil */}
           <div className="md:hidden">
@@ -116,11 +118,11 @@ const InvoicesTableClient = ({
               </tr>
             </thead>
 
-            <tbody className={`transition-colors ${bgRow}`}>
+            <tbody className={`transition-colors ${bg}`}>
               {invoices.map((invoice) => (
                 <tr
                   key={invoice.id}
-                  className="border-b border-gray-500 py-3 text-sm last-of-type:border-none"
+                  className={`border-b py-3 text-sm last-of-type:border-none ${rowBorder}`}
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
