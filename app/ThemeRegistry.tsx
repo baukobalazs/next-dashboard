@@ -3,29 +3,25 @@
 import * as React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import { createContext, ReactNode, useEffect, useMemo, useState } from "react";
 
-export const ThemeContext = React.createContext({
+export const ThemeContext = createContext({
   mode: "light" as "light" | "dark",
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   toggleTheme: () => {},
 });
 
-export default function ThemeRegistry({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [mode, setMode] = React.useState<"light" | "dark">("light");
+export default function ThemeRegistry({ children }: { children: ReactNode }) {
+  const [mode, setMode] = useState<"light" | "dark">("light");
 
-  // load saved mode
-  React.useEffect(() => {
+  useEffect(() => {
     const saved = localStorage.getItem("theme-mode");
     if (saved === "dark" || saved === "light") {
       setMode(saved);
     }
   }, []);
 
-  const theme = React.useMemo(
+  const theme = useMemo(
     () =>
       createTheme({
         palette: { mode },

@@ -18,7 +18,8 @@ import { styled } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import ThemeToggle from "@/app/ui/ThemeToggle";
-
+import GoogleIcon from "@mui/icons-material/Google";
+import FacebookIcon from "@mui/icons-material/Facebook";
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -74,7 +75,6 @@ export default function LoginForm() {
 
   return (
     <SignInContainer direction="column" justifyContent="space-between">
-      {/* Theme toggle in top right corner */}
       <Box sx={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 1000 }}>
         <ThemeToggle />
       </Box>
@@ -160,19 +160,24 @@ export default function LoginForm() {
         <Divider>or</Divider>
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => alert("Sign in with Google")}
+            startIcon={<GoogleIcon />}
+          >
+            Sign in with Google
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => alert("Sign in with Facebook")}
+            startIcon={<FacebookIcon />}
+          >
+            Sign in with Facebook
+          </Button>
           <Typography sx={{ textAlign: "center" }}>
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/signup"
-              style={{
-                color: "inherit",
-                textDecoration: "none",
-                fontWeight: 500,
-                borderBottom: "1px solid currentColor",
-              }}
-            >
-              Sign up
-            </Link>
+            Don&apos;t have an account? <Link href="/signup">Sign up</Link>
           </Typography>
         </Box>
       </Card>

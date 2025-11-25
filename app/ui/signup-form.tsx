@@ -1,148 +1,219 @@
 "use client";
-import { lusitana } from "@/app/ui/fonts";
+import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { authenticate, signup } from "../lib/actions";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import MuiCard from "@mui/material/Card";
+import Divider from "@mui/material/Divider";
+import { styled } from "@mui/material/styles";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import ThemeToggle from "@/app/ui/ThemeToggle";
+import GoogleIcon from "@mui/icons-material/Google";
+import FacebookIcon from "@mui/icons-material/Facebook";
 import {
+  UserCircleIcon,
   AtSymbolIcon,
   KeyIcon,
-  ExclamationCircleIcon,
-  UserCircleIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
-import { Button } from "./button";
-import { useActionState } from "react";
-import { signup } from "../lib/actions";
-import { error } from "console";
-import Link from "next/link";
+import { lusitana } from "./fonts";
+const Card = styled(MuiCard)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignSelf: "center",
+  width: "100%",
+  padding: theme.spacing(4),
+  gap: theme.spacing(2),
+  margin: "auto",
+  [theme.breakpoints.up("sm")]: {
+    maxWidth: "450px",
+  },
+  boxShadow:
+    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  ...theme.applyStyles("dark", {
+    boxShadow:
+      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
+  }),
+}));
+
+const SignUpContainer = styled(Stack)(({ theme }) => ({
+  minHeight: "100vh",
+  padding: theme.spacing(2),
+  position: "relative",
+  [theme.breakpoints.up("sm")]: {
+    padding: theme.spacing(4),
+  },
+  "&::before": {
+    content: '""',
+    display: "block",
+    position: "absolute",
+    zIndex: -1,
+    inset: 0,
+    background:
+      "radial-gradient(circle at 30% 20%, hsl(210, 100%, 98%) 0%, transparent 50%), " +
+      "radial-gradient(circle at 70% 60%, hsl(210, 100%, 96%) 0%, transparent 50%), " +
+      "radial-gradient(circle at 50% 50%, hsl(210, 80%, 98%) 0%, hsl(0, 0%, 100%) 100%)",
+    ...theme.applyStyles("dark", {
+      background:
+        "radial-gradient(circle at 50% 50%, hsla(210, 100%, 16%, 0.4) 0%, transparent 100%), " +
+        "radial-gradient(circle at 50% 50%, hsla(220, 70%, 12%, 0.3) 0%, transparent 100%), " +
+        "radial-gradient(circle at 50% 50%, hsl(220, 30%, 8%) 0%, hsl(220, 30%, 5%) 100%)",
+    }),
+  },
+}));
 
 export default function SignUpForm() {
   const [state, action, pending] = useActionState(signup, undefined);
-
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   return (
-    <form action={action} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please sign up in to continue.
-        </h1>
-        <div className="w-full">
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="name"
-            >
-              Name
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="name"
-                type="name"
-                name="name"
-                placeholder="Enter your name"
-                required
-              />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            {state?.errors?.name &&
-              state?.errors.name.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email address"
-                required
-              />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            {state?.errors?.email &&
-              state?.errors.email.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="password"
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                required
-              />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          {state?.errors?.password &&
-            state?.errors.password.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="confirmPassword"
-            >
-              Confirm password
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="confirmPassword"
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm password"
-                required
-              />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          {state?.errors?.confirmPassword &&
-            state?.errors.confirmPassword.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
-        </div>
+    <SignUpContainer direction="column" justifyContent="space-between">
+      <Box sx={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 1000 }}>
+        <ThemeToggle />
+      </Box>
 
-        <Button className="mt-4 w-full" disabled={pending}>
-          Sign up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
+      <Card variant="outlined">
+        <Typography
+          component="h1"
+          variant="h4"
+          sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
         >
-          {/* Add form errors here */}
-          <div className="mt-4 flex items-center space-x-1 text-sm">
-            <p>Already have an account? Click </p>
-            <Link className="text-blue-400" href={"/login"}>
-              here
-            </Link>
-            <p>to login</p>
-          </div>
-        </div>
-      </div>
-    </form>
+          Sign up
+        </Typography>
+
+        <Box
+          component="form"
+          action={action}
+          noValidate
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            gap: 2,
+          }}
+        >
+          <FormControl>
+            <FormLabel htmlFor="name">Name</FormLabel>
+            <TextField
+              id="name"
+              type="name"
+              name="name"
+              placeholder="User"
+              autoComplete="name"
+              autoFocus
+              required
+              fullWidth
+              variant="outlined"
+              disabled={pending}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <TextField
+              id="email"
+              type="email"
+              name="email"
+              placeholder="your@email.com"
+              autoComplete="email"
+              autoFocus
+              required
+              fullWidth
+              variant="outlined"
+              disabled={pending}
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel htmlFor="password">Password</FormLabel>
+            <TextField
+              name="password"
+              placeholder="••••••"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              required
+              fullWidth
+              variant="outlined"
+              disabled={pending}
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+            <TextField
+              name="confirmPassword"
+              placeholder="••••••"
+              type="confirmPassword"
+              id="confirmPassword"
+              autoComplete="current-confirmPassword"
+              required
+              fullWidth
+              variant="outlined"
+              disabled={pending}
+            />
+          </FormControl>
+
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+            disabled={pending}
+          />
+
+          <input type="hidden" name="redirectTo" value={callbackUrl} />
+
+          {state?.errors && <Alert severity="error">{state.message}</Alert>}
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={pending}
+          >
+            {pending ? (
+              <>
+                <CircularProgress size={20} sx={{ mr: 1 }} color="inherit" />
+                Signing up
+              </>
+            ) : (
+              "Sign in"
+            )}
+          </Button>
+        </Box>
+
+        <Divider>or</Divider>
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => alert("Sign in with Google")}
+            startIcon={<GoogleIcon />}
+          >
+            Sign up with Google
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => alert("Sign in with Facebook")}
+            startIcon={<FacebookIcon />}
+          >
+            Sign up with Facebook
+          </Button>
+          <Typography sx={{ textAlign: "center" }}>
+            Already have an account? <Link href="/login">Sign in</Link>
+          </Typography>
+        </Box>
+      </Card>
+    </SignUpContainer>
   );
 }
