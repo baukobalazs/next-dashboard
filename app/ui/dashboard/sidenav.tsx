@@ -35,7 +35,7 @@ export default function SideNav() {
 
         <div
           className={`hidden h-auto w-full grow rounded-md md:block transition-colors ${
-            isDark ? "bg-gray-800" : "bg-gray-50"
+            isDark ? "bg-gray-900" : "bg-gray-50"
           }`}
         ></div>
 

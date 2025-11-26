@@ -3,11 +3,12 @@ import { CustomerField, InvoiceForm } from "../lib/definitions";
 import Table from "./invoices/table";
 import InvoicesTable from "./invoices/table";
 import CustomersTable from "./customers/table";
+import CustomersTableServer from "./customers/CustomersTableServer";
 
 const SingleCustomerForm = ({ customer }: { customer: CustomerField }) => {
   return (
     <div>
-      <CustomersTable query={`${customer.id}`} currentPage={1} />
+      <CustomersTableServer query={`${customer.id}`} currentPage={1} />
     </div>
   );
 };

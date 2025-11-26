@@ -102,8 +102,8 @@ export async function signup(state: SignUpFormState, formData: FormData) {
   }
     const hashedPassword = await bcrypt.hash(password, 10);
      await sql`
-    INSERT INTO users (name, email, password, role)
-    VALUES (${name}, ${email}, ${hashedPassword}, 'user')
+    INSERT INTO users (name, email, password, role, image_url)
+    VALUES (${name}, ${email}, ${hashedPassword}, 'user' , '/customers/defaultProfile.png')
   `
   const verificationToken = crypto.randomBytes(32).toString("hex");
   const resend = new Resend(process.env.RESEND_API_KEY);

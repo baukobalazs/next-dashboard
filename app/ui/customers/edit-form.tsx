@@ -14,7 +14,8 @@ import {
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { CustomerState, InvoiceState, updateCustomer } from "@/app/lib/actions";
-import { Suspense, useActionState } from "react";
+import { Suspense, useActionState, useContext } from "react";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 export default function EditCustomerForm({
   customer,
@@ -27,9 +28,17 @@ export default function EditCustomerForm({
     updateCustomerWithId,
     initialState
   );
+
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const textColor = isDark ? "text-gray-100" : "text-gray-900";
+  const textSubtle = isDark ? "text-gray-400" : "text-gray-500";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
   return (
     <form action={formAction}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+      <div
+        className={`rounded-md transition-colors ${bg} border border-gray-200 p-4 md:p-6`}
+      >
         <div className="mb-4">
           <label htmlFor="name" className="mb-2 block text-sm font-medium">
             Update name
@@ -42,10 +51,16 @@ export default function EditCustomerForm({
                 type="text"
                 defaultValue={customer.name}
                 placeholder="Customer's name"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className={`peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${bg}`}
                 aria-describedby="name-error"
               />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <UserCircleIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 ${
+                  isDark
+                    ? "peer-focus:text-gray-200"
+                    : "peer-focus:text-gray-900"
+                }`}
+              />
             </div>
           </div>
           <div id="name-error" aria-live="polite" aria-atomic="true">
@@ -57,34 +72,40 @@ export default function EditCustomerForm({
               ))}
           </div>
         </div>
-      </div>
 
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        <div className="mb-4">
-          <label htmlFor="email" className="mb-2 block text-sm font-medium">
-            Update Email
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="email"
-                name="email"
-                type="text"
-                defaultValue={customer.email}
-                placeholder="Customer's email"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="email-error"
-              />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <div className={`rounded-md   ${bg}`}>
+          <div className="mb-4">
+            <label htmlFor="email" className="mb-2 block text-sm font-medium">
+              Update Email
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="email"
+                  name="email"
+                  type="text"
+                  defaultValue={customer.email}
+                  placeholder="Customer's email"
+                  className={`peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${bg}`}
+                  aria-describedby="email-error"
+                />
+                <UserCircleIcon
+                  className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 ${
+                    isDark
+                      ? "peer-focus:text-gray-200"
+                      : "peer-focus:text-gray-900"
+                  }`}
+                />
+              </div>
             </div>
-          </div>
-          <div id="email-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.email &&
-              state.errors.email.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
+            <div id="email-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.email &&
+                state.errors.email.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
           </div>
         </div>
       </div>
