@@ -449,7 +449,7 @@ export async function updateUserProfile(
 
   let imageUrl: string | null = null;
 
-  // Handle image upload
+
   if (imageFile && imageFile.size > 0) {
     try {
       const uniqueName =
@@ -471,7 +471,7 @@ export async function updateUserProfile(
 
   if (!USE_MOCK) {
     try {
-      // Check if email is already taken by another user
+     
       const existingUser = await sql`
         SELECT id FROM users WHERE email = ${email} AND id != ${id}
       `;
@@ -483,7 +483,7 @@ export async function updateUserProfile(
         };
       }
 
-      // Update user profile
+    
       if (imageUrl) {
         await sql`
           UPDATE users 
@@ -530,7 +530,7 @@ export async function updatePassword(
 
   if (!USE_MOCK) {
     try {
-      // Get current user
+      
       const result = await sql`
         SELECT password FROM users WHERE id = ${userId}
       `;
@@ -543,7 +543,7 @@ export async function updatePassword(
 
       const user = result.rows[0];
 
-      // Verify current password
+      
       const passwordMatch = await bcrypt.compare(currentPassword, user.password);
 
       if (!passwordMatch) {
@@ -553,10 +553,10 @@ export async function updatePassword(
         };
       }
 
-      // Hash new password
+  
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-      // Update password
+  
       await sql`
         UPDATE users 
         SET password = ${hashedPassword}
