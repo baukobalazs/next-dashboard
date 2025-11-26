@@ -427,31 +427,29 @@ const PasswordSchema = z.object({
 
 const UpdateUserProfile = UserProfileSchema.omit({ id: true });
 
-
-
 export async function updateUserProfile(
   id: string,
   prevState: UserProfileState,
   formData: FormData
 ) {
   const validatedFields = UpdateUserProfile.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
+    name: formData.get('name'),
+    email: formData.get('email'),
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing fields. Failed to update profile.",
+      message: 'Missing fields. Failed to update profile.',
     };
   }
 
   const { name, email } = validatedFields.data;
-  const imageFile = formData.get("image") as File | null;
+  const imageFile = formData.get('image') as File | null;
 
   let imageUrl: string | null = null;
 
-
+  // Handle image upload
   if (imageFile && imageFile.size > 0) {
     try {
       const uniqueName =
@@ -461,57 +459,53 @@ export async function updateUserProfile(
         access: "public",
       });
 
-      imageUrl = blob.url; 
+      imageUrl = blob.url;
     } catch (error) {
       console.error("Blob upload error:", error);
-
       return {
         errors: { image: ["Failed to upload image."] },
         message: "Image upload failed.",
       };
     }
   }
- 
+
   if (!USE_MOCK) {
     try {
+      // Check if email is already taken by another user
       const existingUser = await sql`
         SELECT id FROM users WHERE email = ${email} AND id != ${id}
       `;
 
-      if (existingUser.rows.length > 0) {
+      if (existingUser.length > 0) {
         return {
-          errors: { email: ["This email is already registered."] },
-          message: "Email already exists.",
+          errors: { email: ['This email is already registered.'] },
+          message: 'Email already exists.',
         };
       }
+
+      // Update user profile
       if (imageUrl) {
-  await sql`
-    UPDATE users
-    SET
-      name = ${name},
-      email = ${email},
-      image_url = ${imageUrl}
-    WHERE id = ${id}
-  `;
-} else {
-  await sql`
-    UPDATE users
-    SET
-      name = ${name},
-      email = ${email}
-    WHERE id = ${id}
-  `;
-}
+        await sql`
+          UPDATE users 
+          SET name = ${name}, email = ${email}, image_url = ${imageUrl}
+          WHERE id = ${id}
+        `;
+      } else {
+        await sql`
+          UPDATE users 
+          SET name = ${name}, email = ${email}
+          WHERE id = ${id}
+        `;
+      }
     } catch (error) {
-      console.error("DB error:", error);
       return {
-        message: "Database error: failed to update profile.",
+        message: 'Database error: failed to update profile.',
       };
     }
   }
 
-  revalidatePath("/dashboard/profile");
-  return { message: "Profile updated successfully!" };
+  revalidatePath('/dashboard/profile');
+  return { message: 'Profile updated successfully!' };
 }
 
 export async function updatePassword(
@@ -530,18 +524,18 @@ export async function updatePassword(
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Invalid fields. Failed to update password.',
     };
-  } 
+  }
 
   const { currentPassword, newPassword } = validatedFields.data;
 
   if (!USE_MOCK) {
     try {
-     
+      // Get current user
       const result = await sql`
         SELECT password FROM users WHERE id = ${userId}
       `;
 
-      if (result.rows.length === 0) {
+      if (!result.rowCount || result.rowCount === 0) {
         return {
           message: 'User not found.',
         };
@@ -549,7 +543,7 @@ export async function updatePassword(
 
       const user = result.rows[0];
 
- 
+      // Verify current password
       const passwordMatch = await bcrypt.compare(currentPassword, user.password);
 
       if (!passwordMatch) {
@@ -559,10 +553,10 @@ export async function updatePassword(
         };
       }
 
-  
+      // Hash new password
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-   
+      // Update password
       await sql`
         UPDATE users 
         SET password = ${hashedPassword}
@@ -578,5 +572,3 @@ export async function updatePassword(
   revalidatePath('/dashboard/profile');
   return { message: 'Password updated successfully!' };
 }
-
- 
