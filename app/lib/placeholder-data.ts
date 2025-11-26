@@ -156,6 +156,8 @@ const mockUsers = [
     password: 'qwe123', 
     role: 'admin',
     is_verified: true,
+    image_url: '/customers/evil-rabbit.png',
+    
   },
     {
     id: '230564b2-4001-4271-9855-fec4b6a6432c',
@@ -164,6 +166,7 @@ const mockUsers = [
     password: 'qwe123', 
     role: 'user',
     is_verified: true,
+    image_url: '/customers/michael-novotny.png',
   },
 ];
 

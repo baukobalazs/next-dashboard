@@ -22,7 +22,7 @@ if ((!USE_MOCK) && process.env.POSTGRES_URL) {
   console.log('Using mock data in development');
 }
 
-async function getUser(email: string): Promise<User | undefined> {
+export async function getUser(email: string): Promise<User | undefined> {
   try {
     if (USE_MOCK) {
       const user = mockUsers.find(u => u.email === email);

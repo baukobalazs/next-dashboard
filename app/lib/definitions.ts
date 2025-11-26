@@ -12,6 +12,7 @@ export type User = {
   password: string;
   role?: UserRole | string | undefined;
   is_verified?: boolean;
+  image_url: string;
 };
 
 export type Customer = {

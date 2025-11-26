@@ -1,14 +1,15 @@
 'use server'
-import {nullable, z} from 'zod'
+import { z} from 'zod'
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { auth, signIn } from '@/auth';
+import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
-import bcrypt, { compare } from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { Resend } from "resend";
 import crypto from "crypto";
-import { stat } from 'fs';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -388,6 +389,190 @@ export async function createCustomer(prevState : CustomerState,formdata: FormDat
     revalidatePath('/dashboard', 'layout');
     redirect('/dashboard/customers');
 }
- 
+
+export type UserProfileState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    image?: string[];
+  };
+  message?: string | null;
+};
+
+export type PasswordState = {
+  errors?: {
+    currentPassword?: string[];
+    newPassword?: string[];
+    confirmPassword?: string[];
+  };
+  message?: string | null;
+};
+
+const UserProfileSchema = z.object({
+  id: z.string(),
+  name: z
+    .string()
+    .min(2, { message: 'Name must be at least 2 characters long.' })
+    .trim(),
+  email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+});
+
+const PasswordSchema = z.object({
+  currentPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  newPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  confirmPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+const UpdateUserProfile = UserProfileSchema.omit({ id: true });
+
+export async function updateUserProfile(
+  id: string,
+  prevState: UserProfileState,
+  formData: FormData
+) {
+  const validatedFields = UpdateUserProfile.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to update profile.',
+    };
+  }
+
+  const { name, email } = validatedFields.data;
+  const imageFile = formData.get('image') as File | null;
+
+  let imageUrl: string | null = null;
+
+  // Handle image upload
+  if (imageFile && imageFile.size > 0) {
+    try {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      // Generate unique filename
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const filename = uniqueSuffix + '-' + imageFile.name;
+      const filepath = path.join(process.cwd(), 'public/uploads', filename);
+
+      await writeFile(filepath, buffer);
+      imageUrl = `/uploads/${filename}`;
+    } catch (error) {
+      return {
+        errors: { image: ['Failed to upload image.'] },
+        message: 'Image upload failed.',
+      };
+    }
+  }
+
+  if (!USE_MOCK) {
+    try {
+      // Check if email is already taken by another user
+      const existingUser = await sql`
+        SELECT id FROM users WHERE email = ${email} AND id != ${id}
+      `;
+
+      if (existingUser.rows.length > 0) {
+        return {
+          errors: { email: ['This email is already registered.'] },
+          message: 'Email already exists.',
+        };
+      }
+
+      // Update user profile
+      if (imageUrl) {
+        await sql`
+          UPDATE users 
+          SET name = ${name}, email = ${email}, image_url = ${imageUrl}
+          WHERE id = ${id}
+        `;
+      } else {
+        await sql`
+          UPDATE users 
+          SET name = ${name}, email = ${email}
+          WHERE id = ${id}
+        `;
+      }
+    } catch (error) {
+      return {
+        message: 'Database error: failed to update profile.',
+      };
+    }
+  }
+
+  revalidatePath('/dashboard/profile');
+  return { message: 'Profile updated successfully!' };
+}
+
+export async function updatePassword(
+  userId: string,
+  prevState: PasswordState,
+  formData: FormData
+) {
+  const validatedFields = PasswordSchema.safeParse({
+    currentPassword: formData.get('currentPassword'),
+    newPassword: formData.get('newPassword'),
+    confirmPassword: formData.get('confirmPassword'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Invalid fields. Failed to update password.',
+    };
+  }
+
+  const { currentPassword, newPassword } = validatedFields.data;
+
+  if (!USE_MOCK) {
+    try {
+      // Get current user
+      const result = await sql`
+        SELECT password FROM users WHERE id = ${userId}
+      `;
+
+      if (result.rows.length === 0) {
+        return {
+          message: 'User not found.',
+        };
+      }
+
+      const user = result.rows[0];
+
+      // Verify current password
+      const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+      if (!passwordMatch) {
+        return {
+          errors: { currentPassword: ['Current password is incorrect.'] },
+          message: 'Current password is incorrect.',
+        };
+      }
+
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update password
+      await sql`
+        UPDATE users 
+        SET password = ${hashedPassword}
+        WHERE id = ${userId}
+      `;
+    } catch (error) {
+      return {
+        message: 'Database error: failed to update password.',
+      };
+    }
+  }
+
+  revalidatePath('/dashboard/profile');
+  return { message: 'Password updated successfully!' };
+}
 
  
