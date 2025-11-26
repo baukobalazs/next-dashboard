@@ -125,7 +125,6 @@ export default function ProfileForm({ user }: ProfileFormProps) {
                     <input
                       hidden
                       accept="image/*"
-                      id="image"
                       type="file"
                       name="image"
                       onChange={handleImageChange}

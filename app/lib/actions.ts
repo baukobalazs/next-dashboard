@@ -14,9 +14,9 @@ const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
 let sql : any ;
 
-if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
+if ((!USE_MOCK ) && process.env.POSTGRES_URL_NON_POOLING) {
   try {
-    sql = postgres(process.env.POSTGRES_URL, { ssl: 'require' });
+    sql = postgres(process.env.POSTGRES_URL_NON_POOLING, { ssl: 'require' });
     console.log('Database connection established');
   } catch (error) {
     console.error('Failed to connect to database:', error);
@@ -427,29 +427,32 @@ const PasswordSchema = z.object({
 
 const UpdateUserProfile = UserProfileSchema.omit({ id: true });
 
+
+
 export async function updateUserProfile(
   id: string,
   prevState: UserProfileState,
   formData: FormData
 ) {
   const validatedFields = UpdateUserProfile.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
+    name: formData.get("name"),
+    email: formData.get("email"),
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Failed to update profile.',
+      message: "Missing fields. Failed to update profile.",
     };
   }
 
   const { name, email } = validatedFields.data;
-  const imageFile = formData.get('image') as File | null;
+  const imageFile = formData.get("image") as File | null;
 
   let imageUrl: string | null = null;
 
-if (imageFile && imageFile.size > 0) {
+
+  if (imageFile && imageFile.size > 0) {
     try {
       const uniqueName =
         Date.now() + "-" + Math.round(Math.random() * 1e9) + "-" + imageFile.name;
@@ -469,44 +472,45 @@ if (imageFile && imageFile.size > 0) {
     }
   }
 
+ 
   if (!USE_MOCK) {
     try {
-    
       const existingUser = await sql`
         SELECT id FROM users WHERE email = ${email} AND id != ${id}
       `;
 
       if (existingUser.rows.length > 0) {
         return {
-          errors: { email: ['This email is already registered.'] },
-          message: 'Email already exists.',
+          errors: { email: ["This email is already registered."] },
+          message: "Email already exists.",
         };
       }
 
-     
       if (imageUrl) {
         await sql`
-          UPDATE users 
+          UPDATE users
           SET name = ${name}, email = ${email}, image_url = ${imageUrl}
           WHERE id = ${id}
         `;
       } else {
         await sql`
-          UPDATE users 
+          UPDATE users
           SET name = ${name}, email = ${email}
           WHERE id = ${id}
         `;
       }
     } catch (error) {
+      console.error("DB error:", error);
       return {
-        message: 'Database error: failed to update profile.',
+        message: "Database error: failed to update profile.",
       };
     }
   }
 
-  revalidatePath('/dashboard/profile');
-  return { message: 'Profile updated successfully!' };
+  revalidatePath("/dashboard/profile");
+  return { message: "Profile updated successfully!" };
 }
+
 
 export async function updatePassword(
   userId: string,
@@ -524,7 +528,7 @@ export async function updatePassword(
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Invalid fields. Failed to update password.',
     };
-  }
+  } 
 
   const { currentPassword, newPassword } = validatedFields.data;
 
