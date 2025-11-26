@@ -535,7 +535,7 @@ export async function updatePassword(
         SELECT * FROM users WHERE id = ${userId}
       `;
 
-      if (result.length === 0 ) {
+      if (!result ) {
         return {
           message: 'User not found.',
         };
