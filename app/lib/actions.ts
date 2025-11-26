@@ -14,9 +14,9 @@ const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
 let sql : any ;
 
-if ((!USE_MOCK ) && process.env.POSTGRES_URL_NON_POOLING) {
+if ((!USE_MOCK ) && process.env.POSTGRES_URL) {
   try {
-    sql = postgres(process.env.POSTGRES_URL_NON_POOLING, { ssl: 'require' });
+    sql = postgres(process.env.POSTGRES_URL, { ssl: 'require' });
     console.log('Database connection established');
   } catch (error) {
     console.error('Failed to connect to database:', error);
@@ -471,7 +471,6 @@ export async function updateUserProfile(
       };
     }
   }
-
  
   if (!USE_MOCK) {
     try {
@@ -486,19 +485,14 @@ export async function updateUserProfile(
         };
       }
 
-      if (imageUrl) {
-        await sql`
-          UPDATE users
-          SET name = ${name}, email = ${email}, image_url = ${imageUrl}
-          WHERE id = ${id}
-        `;
-      } else {
-        await sql`
-          UPDATE users
-          SET name = ${name}, email = ${email}
-          WHERE id = ${id}
-        `;
-      }
+      await sql`
+  UPDATE users
+  SET 
+    name = ${name},
+    email = ${email},
+    image_url = COALESCE(${imageUrl}, image_url)
+  WHERE id = ${id}
+`;
     } catch (error) {
       console.error("DB error:", error);
       return {
