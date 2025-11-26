@@ -544,7 +544,7 @@ export async function updatePassword(
       
 
       
-      const passwordMatch = await bcrypt.compare(currentPassword, pw);
+      const passwordMatch = await bcrypt.compare(currentPassword, pw[0]);
 
       if (!passwordMatch) {
         return {
