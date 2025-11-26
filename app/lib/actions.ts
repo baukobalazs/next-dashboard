@@ -541,7 +541,7 @@ export async function updatePassword(
         };
       }
 
-      const user = result.rows[0];
+      const user = result[0];
 
       
       const passwordMatch = await bcrypt.compare(currentPassword, user.password);
