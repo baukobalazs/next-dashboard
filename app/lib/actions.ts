@@ -136,6 +136,7 @@ if (result.error) {
   }
   }
   revalidatePath('/login');
+  revalidatePath('/dashboard');
   redirect('/login');
 
 }

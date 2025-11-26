@@ -153,7 +153,7 @@ export default function SignUpForm() {
             <TextField
               name="confirmPassword"
               placeholder="••••••"
-              type="confirmPassword"
+              type="password"
               id="confirmPassword"
               autoComplete="current-confirmPassword"
               required
@@ -185,7 +185,7 @@ export default function SignUpForm() {
                 Signing up
               </>
             ) : (
-              "Sign in"
+              "Sign up"
             )}
           </Button>
         </Box>
@@ -196,7 +196,7 @@ export default function SignUpForm() {
           <Button
             fullWidth
             variant="outlined"
-            onClick={() => alert("Sign in with Google")}
+            onClick={() => alert("Signup with Google")}
             startIcon={<GoogleIcon />}
           >
             Sign up with Google
@@ -204,7 +204,7 @@ export default function SignUpForm() {
           <Button
             fullWidth
             variant="outlined"
-            onClick={() => alert("Sign in with Facebook")}
+            onClick={() => alert("Sign up with Facebook")}
             startIcon={<FacebookIcon />}
           >
             Sign up with Facebook
