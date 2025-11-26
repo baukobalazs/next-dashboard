@@ -531,20 +531,20 @@ export async function updatePassword(
   if (!USE_MOCK) {
     try {
       
-      const result = await sql`
+      const pw = await sql`
         SELECT password FROM users WHERE id = ${userId}
       `;
 
-      if (!result.rowCount || result.rowCount === 0) {
+      if (pw.length === 0) {
         return {
           message: 'User not found.',
         };
       }
 
-      const user = result.rows[0];
+      
 
       
-      const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+      const passwordMatch = await bcrypt.compare(currentPassword, pw);
 
       if (!passwordMatch) {
         return {
