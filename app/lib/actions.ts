@@ -484,15 +484,24 @@ export async function updateUserProfile(
           message: "Email already exists.",
         };
       }
-
-      await sql`
-  UPDATE users
-  SET 
-    name = ${name},
-    email = ${email},
-    image_url = COALESCE(${imageUrl}, image_url)
-  WHERE id = ${id}
-`;
+      if (imageUrl) {
+  await sql`
+    UPDATE users
+    SET
+      name = ${name},
+      email = ${email},
+      image_url = ${imageUrl}
+    WHERE id = ${id}
+  `;
+} else {
+  await sql`
+    UPDATE users
+    SET
+      name = ${name},
+      email = ${email}
+    WHERE id = ${id}
+  `;
+}
     } catch (error) {
       console.error("DB error:", error);
       return {
@@ -504,7 +513,6 @@ export async function updateUserProfile(
   revalidatePath("/dashboard/profile");
   return { message: "Profile updated successfully!" };
 }
-
 
 export async function updatePassword(
   userId: string,
