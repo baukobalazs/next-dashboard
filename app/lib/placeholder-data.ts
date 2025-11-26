@@ -1,152 +1,4 @@
-
-const users = [
-  {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',
-    name: 'User',
-    email: 'user@nextmail.com',
-    password: '123456',
-    role: 'user',
-  },
-];
-
-const customers = [
-  {
-    id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
-    name: 'Evil Rabbit',
-    email: 'evil@rabbit.com',
-    image_url: '/customers/evil-rabbit.png',
-  },
-  {
-    id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-    name: 'Delba de Oliveira',
-    email: 'delba@oliveira.com',
-    image_url: '/customers/delba-de-oliveira.png',
-  },
-  {
-    id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
-    name: 'Lee Robinson',
-    email: 'lee@robinson.com',
-    image_url: '/customers/lee-robinson.png',
-  },
-  {
-    id: '76d65c26-f784-44a2-ac19-586678f7c2f2',
-    name: 'Michael Novotny',
-    email: 'michael@novotny.com',
-    image_url: '/customers/michael-novotny.png',
-  },
-  {
-    id: 'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
-    name: 'Amy Burns',
-    email: 'amy@burns.com',
-    image_url: '/customers/amy-burns.png',
-  },
-  {
-    id: '13D07535-C59E-4157-A011-F8D2EF4E0CBB',
-    name: 'Balazs Orban',
-    email: 'balazs@orban.com',
-    image_url: '/customers/balazs-orban.png',
-  },
-];
-
-const invoices = [
-  {
-    customer_id: customers[0].id,
-    amount: 15795,
-    status: 'pending',
-    date: '2022-12-06',
-  },
-  {
-    customer_id: customers[1].id,
-    amount: 20348,
-    status: 'pending',
-    date: '2022-11-14',
-  },
-  {
-    customer_id: customers[4].id,
-    amount: 3040,
-    status: 'paid',
-    date: '2022-10-29',
-  },
-  {
-    customer_id: customers[3].id,
-    amount: 44800,
-    status: 'paid',
-    date: '2023-09-10',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 34577,
-    status: 'pending',
-    date: '2023-08-05',
-  },
-  {
-    customer_id: customers[2].id,
-    amount: 54246,
-    status: 'pending',
-    date: '2023-07-16',
-  },
-  {
-    customer_id: customers[0].id,
-    amount: 666,
-    status: 'pending',
-    date: '2023-06-27',
-  },
-  {
-    customer_id: customers[3].id,
-    amount: 32545,
-    status: 'paid',
-    date: '2023-06-09',
-  },
-  {
-    customer_id: customers[4].id,
-    amount: 1250,
-    status: 'paid',
-    date: '2023-06-17',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 8546,
-    status: 'paid',
-    date: '2023-06-07',
-  },
-  {
-    customer_id: customers[1].id,
-    amount: 500,
-    status: 'paid',
-    date: '2023-08-19',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 8945,
-    status: 'paid',
-    date: '2023-06-03',
-  },
-  {
-    customer_id: customers[2].id,
-    amount: 1000,
-    status: 'paid',
-    date: '2022-06-05',
-  },
-];
-
-const revenue = [
-  { month: 'Jan', revenue: 2000 },
-  { month: 'Feb', revenue: 1800 },
-  { month: 'Mar', revenue: 2200 },
-  { month: 'Apr', revenue: 2500 },
-  { month: 'May', revenue: 2300 },
-  { month: 'Jun', revenue: 3200 },
-  { month: 'Jul', revenue: 3500 },
-  { month: 'Aug', revenue: 3700 },
-  { month: 'Sep', revenue: 2500 },
-  { month: 'Oct', revenue: 2800 },
-  { month: 'Nov', revenue: 3000 },
-  { month: 'Dec', revenue: 4800 },
-];
-
-export { users, customers, invoices, revenue };
-
-
+import { Revenue, InvoicesTable, CustomersTableType } from "./definitions";
 
 const mockUsers = [
   {
@@ -170,4 +22,182 @@ const mockUsers = [
   },
 ];
 
-export { mockUsers };
+const MOCK_REVENUE: Revenue[] = [
+  { month: 'Jan', revenue: 2000 },
+  { month: 'Feb', revenue: 1800 },
+  { month: 'Mar', revenue: 2200 },
+  { month: 'Apr', revenue: 2500 },
+  { month: 'May', revenue: 2300 },
+  { month: 'Jun', revenue: 3200 },
+  { month: 'Jul', revenue: 3500 },
+  { month: 'Aug', revenue: 3700 },
+  { month: 'Sep', revenue: 2500 },
+  { month: 'Oct', revenue: 2800 },
+  { month: 'Nov', revenue: 3000 },
+  { month: 'Dec', revenue: 4800 },
+];
+
+const MOCK_INVOICES: InvoicesTable[] = [
+  {
+    id: '1',
+    customer_id: 'cust1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    date: '2024-01-15',
+    amount: 375000,
+    status: 'pending',
+    deadline: '2025-12-25'
+  },
+  {
+    id: '2',
+    customer_id: 'cust2',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2024-01-10',
+    amount: 250000,
+    status: 'paid',
+    deadline: null
+  },
+  {
+    id: '3',
+    customer_id: 'cust3',
+    name: 'Lee Robinson',
+    email: 'lee@robinson.com',
+    image_url: '/customers/lee-robinson.png',
+    date: '2024-01-08',
+    amount: 125000,
+    status: 'paid',
+    deadline: null
+  },
+  {
+    id: '4',
+    customer_id: 'cust4',
+    name: 'Michael Novotny',
+    email: 'michael@novotny.com',
+    image_url: '/customers/michael-novotny.png',
+    date: '2024-01-05',
+    amount: 854600,
+    status: 'pending',
+     deadline: '2025-12-31'
+  },
+  {
+    id: '5',
+    customer_id: 'cust5',
+    name: 'Amy Burns',
+    email: 'amy@burns.com',
+    image_url: '/customers/amy-burns.png',
+    date: '2024-01-03',
+    amount: 650000,
+    status: 'paid',
+    deadline: null
+  },
+  {
+    id: '6',
+    customer_id: 'cust1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    date: '2023-12-20',
+    amount: 120000,
+    status: 'paid',
+    deadline: null
+  },
+  {
+    id: '7',
+    customer_id: 'cust2',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2023-12-15',
+    amount: 340000,
+    status: 'pending',
+     deadline: '2025-12-31'
+  },
+   {
+    id: '8',
+    customer_id: '230564b2-4001-4271-9855-fec4b6a6432c',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2023-12-15',
+    amount: 340000,
+    status: 'pending',
+     deadline: '2025-12-31'
+  },
+    {
+    id: '9',
+    customer_id: '230564b2-4001-4271-9855-fec4b6a6432c',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    date: '2023-12-15',
+    amount: 3402300,
+    status: 'paid',
+     deadline: '2025-12-31'
+  },
+];
+
+const MOCK_CUSTOMERS: CustomersTableType[] = [
+  {
+    id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    total_invoices: 2,
+    total_pending: 375000,
+    total_paid: 120000,
+  },
+  {
+    id: 'cust2',
+    name: 'Delba de Oliveira',
+    email: 'delba@oliveira.com',
+    image_url: '/customers/delba-de-oliveira.png',
+    total_invoices: 2,
+    total_pending: 340000,
+    total_paid: 250000,
+  },
+  {
+    id: 'cust3',
+    name: 'Lee Robinson',
+    email: 'lee@robinson.com',
+    image_url: '/customers/lee-robinson.png',
+    total_invoices: 1,
+    total_pending: 0,
+    total_paid: 125000,
+  },
+  {
+    id: 'cust4',
+    name: 'Michael Novotny',
+    email: 'michael@novotny.com',
+    image_url: '/customers/michael-novotny.png',
+    total_invoices: 1,
+    total_pending: 854600,
+    total_paid: 0,
+  },
+  {
+    id: 'cust5',
+    name: 'Amy Burns',
+    email: 'amy@burns.com',
+    image_url: '/customers/amy-burns.png',
+    total_invoices: 1,
+    total_pending: 0,
+    total_paid: 650000,
+  },
+    {
+    id: 'user1',
+    name: 'Evil Rabbit',
+    email: 'evil@rabbit.com',
+    image_url: '/customers/evil-rabbit.png',
+    total_invoices: 2,
+    total_pending: 375000,
+    total_paid: 120000,
+  },
+];
+
+export { MOCK_CUSTOMERS, mockUsers, MOCK_REVENUE, MOCK_INVOICES };
+
+
+
+

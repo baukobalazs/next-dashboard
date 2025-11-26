@@ -163,7 +163,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
                 fullWidth
                 label="Role"
                 value={user.role || "user"}
-                disabled
+                disabled={user.role !== "admin"}
               />
 
               {/* Success/Error Messages */}

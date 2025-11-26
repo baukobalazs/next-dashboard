@@ -36,6 +36,20 @@ export async function getUser(email: string): Promise<User | undefined> {
     throw new Error('Failed to fetch user');
   }
 }
+export async function getUserByid(id: string): Promise<User | undefined> {
+  try {
+    if (USE_MOCK) {
+      const user = mockUsers.find(u => u.id === id);
+      return user;
+    }
+    
+    const user = await sql<User[]>`SELECT * FROM users WHERE id = ${id}`;
+    return user[0];
+  } catch (error) {
+    console.error('Failed to fetch user: ', error);
+    throw new Error('Failed to fetch user');
+  }
+}
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
