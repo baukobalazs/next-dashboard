@@ -8,8 +8,7 @@ import { AuthError } from 'next-auth';
 import bcrypt from 'bcryptjs';
 import { Resend } from "resend";
 import crypto from "crypto";
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import { put } from "@vercel/blob";
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -450,30 +449,29 @@ export async function updateUserProfile(
 
   let imageUrl: string | null = null;
 
-  // Handle image upload
-  if (imageFile && imageFile.size > 0) {
+if (imageFile && imageFile.size > 0) {
     try {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const uniqueName =
+        Date.now() + "-" + Math.round(Math.random() * 1e9) + "-" + imageFile.name;
 
-      // Generate unique filename
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      const filename = uniqueSuffix + '-' + imageFile.name;
-      const filepath = path.join(process.cwd(), 'public/uploads', filename);
+      const blob = await put(uniqueName, imageFile, {
+        access: "public",
+      });
 
-      await writeFile(filepath, buffer);
-      imageUrl = `/uploads/${filename}`;
+      imageUrl = blob.url; 
     } catch (error) {
+      console.error("Blob upload error:", error);
+
       return {
-        errors: { image: ['Failed to upload image.'] },
-        message: 'Image upload failed.',
+        errors: { image: ["Failed to upload image."] },
+        message: "Image upload failed.",
       };
     }
   }
 
   if (!USE_MOCK) {
     try {
-      // Check if email is already taken by another user
+    
       const existingUser = await sql`
         SELECT id FROM users WHERE email = ${email} AND id != ${id}
       `;
@@ -485,7 +483,7 @@ export async function updateUserProfile(
         };
       }
 
-      // Update user profile
+     
       if (imageUrl) {
         await sql`
           UPDATE users 
@@ -532,7 +530,7 @@ export async function updatePassword(
 
   if (!USE_MOCK) {
     try {
-      // Get current user
+     
       const result = await sql`
         SELECT password FROM users WHERE id = ${userId}
       `;
@@ -545,7 +543,7 @@ export async function updatePassword(
 
       const user = result.rows[0];
 
-      // Verify current password
+ 
       const passwordMatch = await bcrypt.compare(currentPassword, user.password);
 
       if (!passwordMatch) {
@@ -555,10 +553,10 @@ export async function updatePassword(
         };
       }
 
-      // Hash new password
+  
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-      // Update password
+   
       await sql`
         UPDATE users 
         SET password = ${hashedPassword}

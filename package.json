@@ -17,6 +17,7 @@
     "@mui/material-nextjs": "^7.3.5",
     "@tailwindcss/forms": "^0.5.10",
     "@types/bcryptjs": "^3.0.0",
+    "@vercel/blob": "^2.0.0",
     "autoprefixer": "10.4.20",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
