@@ -11,7 +11,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   const id = params.id;
   const user = await getUserByid(id);
 
-  if (!user.id) {
+  if (!user) {
     notFound();
   }
 
