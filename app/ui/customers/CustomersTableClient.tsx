@@ -52,7 +52,9 @@ const CustomersTableClient = ({
                         height={28}
                         alt={`${customer.name}'s profile picture`}
                       />
-                      <p>{customer.name}</p>
+                      <Link href={`/dashboard/profile/${customer.id}`}>
+                        {customer.name}
+                      </Link>
                     </div>
                     <p className={`text-sm ${textSubtle}`}>{customer.email}</p>
                   </div>
@@ -134,7 +136,9 @@ const CustomersTableClient = ({
                         height={28}
                         alt={`${customer.name}'s profile picture`}
                       />
-                      <p>{customer.name}</p>
+                      <Link href={`/dashboard/profile/${customer.id}`}>
+                        {customer.name}
+                      </Link>
                     </div>
                   </td>
 

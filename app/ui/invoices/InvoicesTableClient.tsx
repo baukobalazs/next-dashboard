@@ -56,7 +56,9 @@ const InvoicesTableClient = ({
                         height={28}
                         alt={`${invoice.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <Link href={`/dashboard/profile/${invoice.customer_id}`}>
+                        {invoice.name}
+                      </Link>
                     </div>
                     <p className={`text-sm ${textSubtle}`}>{invoice.email}</p>
                   </div>
