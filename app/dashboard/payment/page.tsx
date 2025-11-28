@@ -1,6 +1,4 @@
-import { Suspense } from "react";
 import PaymentPageClient from "./PaymentPageClient";
-import { Box, Skeleton } from "@mui/material";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { fetchUserCreditCards } from "@/app/lib/actions";
@@ -10,11 +8,7 @@ export default async function PaymentPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  return (
-    <Suspense fallback={<PaymentPageSkeleton />}>
-      <PaymentPageContent session={session} />
-    </Suspense>
-  );
+  return <PaymentPageContent session={session} />;
 }
 
 async function PaymentPageContent({ session }: { session: any }) {
@@ -30,45 +24,5 @@ async function PaymentPageContent({ session }: { session: any }) {
       userRole={userRole}
       cards={cards}
     />
-  );
-}
-
-function PaymentPageSkeleton() {
-  return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <InvoicesSkeleton />
-      <CardsSkeleton />
-    </Box>
-  );
-}
-
-function CardsSkeleton() {
-  return (
-    <Box sx={{ display: "flex", gap: 2, overflowX: "auto" }}>
-      {[1, 2].map((i) => (
-        <Skeleton
-          key={i}
-          variant="rectangular"
-          width={320}
-          height={200}
-          sx={{ borderRadius: 2 }}
-        />
-      ))}
-    </Box>
-  );
-}
-
-function InvoicesSkeleton() {
-  return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {[1, 2, 3].map((i) => (
-        <Skeleton
-          key={i}
-          variant="rectangular"
-          height={80}
-          sx={{ borderRadius: 1 }}
-        />
-      ))}
-    </Box>
   );
 }
