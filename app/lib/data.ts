@@ -12,7 +12,7 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { notFound } from 'next/navigation';
-import { MOCK_CUSTOMERS, MOCK_INVOICES, MOCK_REVENUE, mockUsers } from './placeholder-data';
+import { MOCK_CUSTOMERS, MOCK_INVOICES, MOCK_REVENUE, MOCK_USERS } from './placeholder-data';
 
 
 
@@ -471,7 +471,7 @@ export async function fetchCustomersPages(query: string) {
 export async function fetchUsers() {
   if (USE_MOCK || !sql) {
     console.log('Using mock users...');
-    return mockUsers .map(user => ({
+    return MOCK_USERS .map(user => ({
       id: user.id,
       name: user.name,
       email: user.email,

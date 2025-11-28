@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import postgres from "postgres";
-import { invoices, customers, revenue, users } from "../lib/placeholder-data";
+import { MOCK_USERS, MOCK_CUSTOMERS, MOCK_INVOICES, MOCK_REVENUE } from "../lib/placeholder-data";
 
 const sql = postgres(process.env.POSTGRES_URL_NON_POOLING!, { ssl: "require" });
 
@@ -16,7 +16,7 @@ async function seedUsers() {
   `;
 
   const insertedUsers = await Promise.all(
-    users.map(async (user) => {
+    MOCK_USERS.map(async (user) => {
       const hashedPassword = await bcrypt.hash(user.password, 10);
       return sql`
         INSERT INTO users (id, name, email, password, role)
@@ -43,7 +43,7 @@ async function seedInvoices() {
   `;
 
   const insertedInvoices = await Promise.all(
-    invoices.map(
+    MOCK_INVOICES.map(
       (invoice) => sql`
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
@@ -68,7 +68,7 @@ async function seedCustomers() {
   `;
 
   const insertedCustomers = await Promise.all(
-    customers.map(
+    MOCK_CUSTOMERS.map(
       (customer) => sql`
         INSERT INTO customers (id, name, email, image_url)
         VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
@@ -89,7 +89,7 @@ async function seedRevenue() {
   `;
 
   const insertedRevenue = await Promise.all(
-    revenue.map(
+    MOCK_REVENUE.map(
       (rev) => sql`
         INSERT INTO revenue (month, revenue)
         VALUES (${rev.month}, ${rev.revenue})

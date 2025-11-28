@@ -1,6 +1,6 @@
 import { Revenue, InvoicesTable, CustomersTableType } from "./definitions";
 
-const mockUsers = [
+const MOCK_USERS = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
     name: 'Test User',
@@ -196,7 +196,7 @@ const MOCK_CUSTOMERS: CustomersTableType[] = [
   },
 ];
 
-export { MOCK_CUSTOMERS, mockUsers, MOCK_REVENUE, MOCK_INVOICES };
+export { MOCK_CUSTOMERS, MOCK_USERS, MOCK_REVENUE, MOCK_INVOICES };
 
 
 
