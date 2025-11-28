@@ -762,7 +762,7 @@ export async function fetchUserCreditCards(userId: string): Promise<CreditCard[]
       ORDER BY is_default DESC, created_at DESC
     `;
 
-    return result.rows;
+    return result[0];
   } catch (error) {
     console.error('Database error:', error);
     throw new Error('Failed to fetch credit cards.');

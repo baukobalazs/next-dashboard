@@ -174,8 +174,8 @@ export const MOCK_CREDIT_CARDS: CreditCard[] = [
   },
   {
     id: '2',
-    user_id: '410544b2-4001-4271-9855-fec4b6a6442a',
-    card_holder_name: 'John Doe',
+    user_id: '230564b2-4001-4271-9855-fec4b6a6432c',
+    card_holder_name: 'Peter Parker',
     card_number_last4: '5555',
     card_brand: 'Mastercard',
     expiry_month: '08',
