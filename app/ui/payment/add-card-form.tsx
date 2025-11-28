@@ -88,20 +88,24 @@ export default function AddCardForm({ userId }: AddCardFormProps) {
   return (
     <Grid container spacing={4}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 3, mt: 5 }}>
           <CreditCard>
             <CreditCardFlipper>
-              <CreditCardFront className={getCardColor(cardBrand)}>
+              <CreditCardFront
+                className={`${getCardColor(
+                  cardBrand
+                )} absolute w-82 h-52 backface-hidden`}
+              >
                 <CreditCardChip />
-                <CreditCardNumber className="absolute top-24 left-0">
+                <CreditCardNumber className="absolute top-20 left-0">
                   {cardData.card_number
                     ? formatCardNumber(cardData.card_number)
                     : "•••• •••• •••• ••••"}
                 </CreditCardNumber>
-                <CreditCardName className="absolute bottom-12 left-0">
+                <CreditCardName className="absolute bottom-8 left-0">
                   {cardData.card_holder_name || "CARDHOLDER NAME"}
                 </CreditCardName>
-                <CreditCardExpiry className="absolute bottom-6 left-6">
+                <CreditCardExpiry className="absolute bottom-3 left-6">
                   {cardData.expiry_month && cardData.expiry_year
                     ? `${cardData.expiry_month}/${cardData.expiry_year.slice(
                         -2

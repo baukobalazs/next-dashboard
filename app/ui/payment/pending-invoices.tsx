@@ -1,3 +1,4 @@
+"use client";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
@@ -10,7 +11,7 @@ type PendingInvoicesProps = {
   cards: CreditCard[];
 };
 
-export default async function PendingInvoices({
+export default function PendingInvoices({
   invoices,
   cards,
 }: PendingInvoicesProps) {

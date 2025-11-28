@@ -1,11 +1,11 @@
+"use client";
 import { Card, CardContent } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import AddCardForm from "@/app/ui/payment/add-card-form";
 
-import SavedCards from "./saved-cards";
-import { Suspense } from "react";
+import SavedCards from "../../ui/payment/saved-cards";
 import { CreditCard, InvoicesTable } from "@/app/lib/definitions";
 
 import PendingInvoices from "@/app/ui/payment/pending-invoices";
@@ -38,9 +38,7 @@ export default function PaymentPageClient({
               Pending Invoices
             </Typography>
 
-            <Suspense fallback={<InvoicesSkeleton />}>
-              <PendingInvoices invoices={invoices} cards={cards} />
-            </Suspense>
+            <PendingInvoices invoices={invoices} cards={cards} />
           </CardContent>
         </Card>
 
@@ -50,9 +48,7 @@ export default function PaymentPageClient({
               Saved Payment Methods
             </Typography>
 
-            <Suspense fallback={<CardsSkeleton />}>
-              <SavedCards userId={userId} cards={cards} />
-            </Suspense>
+            <SavedCards userId={userId} cards={cards} />
           </CardContent>
         </Card>
 
@@ -67,36 +63,5 @@ export default function PaymentPageClient({
         </Card>
       </Box>
     </div>
-  );
-}
-
-function CardsSkeleton() {
-  return (
-    <Box sx={{ display: "flex", gap: 2, overflowX: "auto" }}>
-      {[1, 2].map((i) => (
-        <Skeleton
-          key={i}
-          variant="rectangular"
-          width={320}
-          height={200}
-          sx={{ borderRadius: 2 }}
-        />
-      ))}
-    </Box>
-  );
-}
-
-function InvoicesSkeleton() {
-  return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {[1, 2, 3].map((i) => (
-        <Skeleton
-          key={i}
-          variant="rectangular"
-          height={80}
-          sx={{ borderRadius: 1 }}
-        />
-      ))}
-    </Box>
   );
 }
