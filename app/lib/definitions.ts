@@ -106,3 +106,26 @@ export type CustomerEditForm = {
   name: string, 
   email: string, 
 }
+
+export type CreditCard = {
+  id: string;
+  user_id: string;
+  card_holder_name: string;
+  card_number_last4: string;
+  card_brand: 'Visa' | 'Mastercard' | 'Amex' | 'Discover';
+  expiry_month: string;
+  expiry_year: string;
+  is_default: boolean;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type CreditCardForm = {
+  card_holder_name: string;
+  card_number: string;
+  expiry_month: string;
+  expiry_year: string;
+  cvv: string;
+  is_default: boolean;
+};
+

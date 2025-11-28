@@ -1,7 +1,5 @@
-import { fetchCustomerById, fetchInvoiceById } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import ProfileForm from "@/app/ui/profile/profile-form";
-import SingleInvoiceForm from "@/app/ui/single-invoice-form";
 import { auth, getUser, getUserByid } from "@/auth";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -11,7 +9,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   const id = params.id;
   const user = await getUserByid(id);
 
-  if (!user) {
+  if (!user || !user.id) {
     notFound();
   }
 

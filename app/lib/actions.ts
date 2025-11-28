@@ -9,6 +9,8 @@ import bcrypt from 'bcryptjs';
 import { Resend } from "resend";
 import crypto from "crypto";
 import { put } from "@vercel/blob";
+import { CreditCard } from './definitions';
+import { MOCK_CREDIT_CARDS } from './placeholder-data';
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -571,4 +573,198 @@ export async function updatePassword(
 
   revalidatePath('/dashboard/profile');
   return { message: 'Password updated successfully!' };
+}
+
+export type CreditCardState = {
+  errors?: {
+    card_holder_name?: string[];
+    card_number?: string[];
+    expiry_month?: string[];
+    expiry_year?: string[];
+    cvv?: string[];
+  };
+  message?: string | null;
+};
+
+const CreditCardSchema = z.object({
+  card_holder_name: z
+    .string()
+    .min(3, { message: 'Card holder name must be at least 3 characters.' })
+    .trim(),
+  card_number: z
+    .string()
+    .regex(/^\d{16}$/, { message: 'Card number must be 16 digits.' }),
+  expiry_month: z
+    .string()
+    .regex(/^(0[1-9]|1[0-2])$/, { message: 'Invalid month (01-12).' }),
+  expiry_year: z
+    .string()
+    .regex(/^\d{4}$/, { message: 'Year must be 4 digits.' })
+    .refine((year) => parseInt(year) >= new Date().getFullYear(), {
+      message: 'Card has expired.',
+    }),
+  cvv: z.string().regex(/^\d{3,4}$/, { message: 'CVV must be 3 or 4 digits.' }),
+  is_default: z.boolean().optional(),
+});
+
+// Detect card brand from number
+function detectCardBrand(cardNumber: string): 'Visa' | 'Mastercard' | 'Amex' | 'Discover' {
+  const firstDigit = cardNumber[0];
+  const firstTwo = cardNumber.substring(0, 2);
+
+  if (firstDigit === '4') return 'Visa';
+  if (parseInt(firstTwo) >= 51 && parseInt(firstTwo) <= 55) return 'Mastercard';
+  if (firstTwo === '34' || firstTwo === '37') return 'Amex';
+  if (firstTwo === '60' || firstTwo === '65') return 'Discover';
+
+  return 'Visa'; // default
+}
+
+export async function addCreditCard(
+  userId: string,
+  prevState: CreditCardState,
+  formData: FormData
+) {
+  const validatedFields = CreditCardSchema.safeParse({
+    card_holder_name: formData.get('card_holder_name'),
+    card_number: formData.get('card_number'),
+    expiry_month: formData.get('expiry_month'),
+    expiry_year: formData.get('expiry_year'),
+    cvv: formData.get('cvv'),
+    is_default: formData.get('is_default') === 'true',
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing or invalid fields. Failed to add card.',
+    };
+  }
+
+  const { card_holder_name, card_number, expiry_month, expiry_year, is_default } =
+    validatedFields.data;
+
+  const card_number_last4 = card_number.slice(-4);
+  const card_brand = detectCardBrand(card_number);
+
+  if (!USE_MOCK) {
+    try {
+      // If this card is set as default, unset all other defaults
+      if (is_default) {
+        await sql`
+          UPDATE credit_cards
+          SET is_default = false
+          WHERE user_id = ${userId}
+        `;
+      }
+
+      // In production, you would:
+      // 1. Tokenize the card with Stripe/PayPal
+      // 2. Store only the token and last4 digits
+      // NEVER store full card numbers!
+
+      await sql`
+        INSERT INTO credit_cards (
+          user_id,
+          card_holder_name,
+          card_number_last4,
+          card_brand,
+          expiry_month,
+          expiry_year,
+          is_default
+        )
+        VALUES (
+          ${userId},
+          ${card_holder_name},
+          ${card_number_last4},
+          ${card_brand},
+          ${expiry_month},
+          ${expiry_year},
+          ${is_default || false}
+        )
+      `;
+    } catch (error) {
+      console.error('Database error:', error);
+      return {
+        message: 'Database error: failed to add credit card.',
+      };
+    }
+  } else {
+    // Mock: just log
+    console.log('Mock: Card added', {
+      card_holder_name,
+      card_number_last4,
+      card_brand,
+    });
+  }
+
+  revalidatePath('/dashboard/payment');
+  return { message: 'Credit card added successfully!' };
+}
+
+export async function deleteCreditCard(cardId: string, userId: string) {
+  if (!USE_MOCK) {
+    try {
+      await sql`
+        DELETE FROM credit_cards
+        WHERE id = ${cardId} AND user_id = ${userId}
+      `;
+    } catch (error) {
+      console.error('Database error:', error);
+      return { message: 'Database error: failed to delete card.' };
+    }
+  } else {
+    console.log('Mock: Card deleted', cardId);
+  }
+
+  revalidatePath('/dashboard/payment');
+  return { message: 'Card deleted successfully!' };
+}
+
+export async function setDefaultCard(cardId: string, userId: string) {
+  if (!USE_MOCK) {
+    try {
+      // Unset all defaults
+      await sql`
+        UPDATE credit_cards
+        SET is_default = false
+        WHERE user_id = ${userId}
+      `;
+
+      // Set new default
+      await sql`
+        UPDATE credit_cards
+        SET is_default = true
+        WHERE id = ${cardId} AND user_id = ${userId}
+      `;
+    } catch (error) {
+      console.error('Database error:', error);
+      return { message: 'Database error: failed to set default card.' };
+    }
+  } else {
+    console.log('Mock: Default card set', cardId);
+  }
+
+  revalidatePath('/dashboard/payment');
+  return { message: 'Default card updated!' };
+}
+
+export async function fetchUserCreditCards(userId: string): Promise<CreditCard[]> {
+  if (USE_MOCK) {
+    return MOCK_CREDIT_CARDS.filter((card) => card.user_id === userId);
+  }
+
+  try {
+    const result = await sql<CreditCard[]>`
+      SELECT *
+      FROM credit_cards
+      WHERE user_id = ${userId}
+      ORDER BY is_default DESC, created_at DESC
+    `;
+
+    return result.rows;
+  } catch (error) {
+    console.error('Database error:', error);
+    throw new Error('Failed to fetch credit cards.');
+  }
 }

@@ -1,4 +1,4 @@
-import { Revenue, InvoicesTable, CustomersTableType } from "./definitions";
+import { Revenue, InvoicesTable, CustomersTableType, CreditCard } from "./definitions";
 
 const MOCK_USERS = [
   {
@@ -159,7 +159,31 @@ const MOCK_INVOICES: InvoicesTable[] = [
      deadline: '2025-12-31'
   },
 ];
-
+// Add to placeholder-data.ts or your mock file
+export const MOCK_CREDIT_CARDS: CreditCard[] = [
+  {
+    id: '1',
+    user_id: '410544b2-4001-4271-9855-fec4b6a6442a', 
+    card_holder_name: 'John Doe',
+    card_number_last4: '4242',
+    card_brand: 'Visa',
+    expiry_month: '12',
+    expiry_year: '2025',
+    is_default: true,
+    created_at: '2024-01-15',
+  },
+  {
+    id: '2',
+    user_id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    card_holder_name: 'John Doe',
+    card_number_last4: '5555',
+    card_brand: 'Mastercard',
+    expiry_month: '08',
+    expiry_year: '2026',
+    is_default: false,
+    created_at: '2024-02-20',
+  },
+];
 
 
 export { MOCK_CUSTOMERS, MOCK_USERS, MOCK_REVENUE, MOCK_INVOICES };
