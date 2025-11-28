@@ -5,7 +5,7 @@ import { z } from 'zod';
 import type { User } from './app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
-import { mockUsers } from './app/lib/placeholder-data';
+import { MOCK_USERS } from './app/lib/placeholder-data';
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -25,7 +25,7 @@ if ((!USE_MOCK) && process.env.POSTGRES_URL) {
 export async function getUser(email: string): Promise<User | undefined> {
   try {
     if (USE_MOCK) {
-      const user = mockUsers.find(u => u.email === email);
+      const user = MOCK_USERS.find(u => u.email === email);
       return user;
     }
     
@@ -39,7 +39,7 @@ export async function getUser(email: string): Promise<User | undefined> {
 export async function getUserByid(id: string): Promise<User | undefined> {
   try {
     if (USE_MOCK) {
-      const user = mockUsers.find(u => u.id === id);
+      const user = MOCK_USERS.find(u => u.id === id);
       return user;
     }
     
