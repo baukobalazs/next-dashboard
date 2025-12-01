@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { fetchUserCreditCards } from "@/app/lib/actions";
 import { fetchFilteredInvoices } from "@/app/lib/data";
+import { revalidatePath } from "next/cache";
 
 export default async function PaymentPage() {
   const session = await auth();

@@ -762,9 +762,21 @@ export async function fetchUserCreditCards(userId: string): Promise<CreditCard[]
       ORDER BY is_default DESC, created_at DESC
     `;
 
-    return result;
+    return result; // !!!!!!!!!!!!
   } catch (error) {
     console.error('Database error:', error);
     throw new Error('Failed to fetch credit cards.');
   }
 }
+
+export async function updateInvoiceStatus(invoiceId: string, status: string) {
+  await sql`
+    UPDATE invoices
+    SET status = ${status}
+    WHERE id = ${invoiceId}
+  `;
+}
+
+
+
+

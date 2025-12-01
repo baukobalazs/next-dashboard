@@ -189,6 +189,7 @@ function CardFlipper({
           color="error"
           onClick={onDelete}
           disabled={loading === card.id}
+          className="-top-3"
         >
           <DeleteIcon />
         </IconButton>

@@ -79,7 +79,6 @@ export default function PendingInvoices({
               <PayInvoiceButton
                 invoiceId={invoice.id}
                 amount={invoice.amount}
-                cards={cards}
               />
             ) : (
               <Chip label="Add card to pay" color="default" />

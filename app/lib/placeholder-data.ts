@@ -183,6 +183,18 @@ export const MOCK_CREDIT_CARDS: CreditCard[] = [
     is_default: false,
     created_at: '2024-02-20',
   },
+
+  {
+    id: '3',
+    user_id: '410544b2-4001-4271-9855-fec4b6a6442a', 
+    card_holder_name: 'John Doe',
+    card_number_last4: '2342',
+    card_brand: 'Mastercard',
+    expiry_month: '11',
+    expiry_year: '2026',
+    is_default: false,
+    created_at: '2024-03-15',
+  },
 ];
 
 
