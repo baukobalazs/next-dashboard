@@ -18,7 +18,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import { formatCurrency } from "@/app/lib/utils";
-import { ThemeContext } from "@emotion/react";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -39,6 +39,9 @@ export default function StripePaymentModal({
 }: StripePaymentModalProps) {
   const [clientSecret, setClientSecret] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
 
   useEffect(() => {
     if (open && amount) {
@@ -67,15 +70,13 @@ export default function StripePaymentModal({
         });
     }
   }, [open, amount, invoiceId]);
-  const mode = useContext(ThemeContext);
-  const isDark = mode === "dark";
 
   const appearance = isDark
     ? {
-        theme: "stripe" as const,
+        theme: "night" as const,
       }
     : {
-        theme: "night" as const,
+        theme: "stripe" as const,
       };
 
   const options = {
