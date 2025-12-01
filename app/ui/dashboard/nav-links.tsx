@@ -6,6 +6,8 @@ import {
   DocumentDuplicateIcon,
   BanknotesIcon,
   UserCircleIcon,
+  PaperClipIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,6 +24,7 @@ const links = [
   },
   { name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
   { name: "Payment", href: "/dashboard/payment", icon: BanknotesIcon },
+  { name: "Articles", href: "/dashboard/articles", icon: PencilSquareIcon },
   { name: "Profile", href: "/dashboard/profile", icon: UserCircleIcon },
 ];
 
