@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -18,6 +18,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import { formatCurrency } from "@/app/lib/utils";
+import { ThemeContext } from "@emotion/react";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -66,10 +67,16 @@ export default function StripePaymentModal({
         });
     }
   }, [open, amount, invoiceId]);
+  const mode = useContext(ThemeContext);
+  const isDark = mode === "dark";
 
-  const appearance = {
-    theme: "stripe" as const,
-  };
+  const appearance = isDark
+    ? {
+        theme: "stripe" as const,
+      }
+    : {
+        theme: "night" as const,
+      };
 
   const options = {
     clientSecret,
