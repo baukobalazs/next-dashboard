@@ -775,8 +775,10 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
     SET status = ${status}
     WHERE id = ${invoiceId}
   `;
+  revalidatePath('/dashboard', 'layout')
+  revalidatePath('/dashboard/invoices')
   revalidatePath('/dashboard/payment')
-  redirect('dashboard/payment')
+  
 }
 
 
