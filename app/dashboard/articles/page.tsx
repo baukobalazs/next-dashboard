@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { Suspense } from "react";
-import Pagination from "@/app/ui/invoices/pagination";
+// import Pagination from "@/app/ui/invoices/pagination";
 // import ArticlesList from "@/app/ui/articles/articles-list";
 // import ArticlesFilter from "@/app/ui/articles/articles-filter";
 
@@ -47,9 +47,9 @@ export default async function ArticlesPage(props: {
         <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
       </Suspense> */}
 
-      <div className="mt-8 flex w-full justify-center">
+      {/* <div className="mt-8 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div>
+      </div> */}
     </div>
   );
 }
