@@ -158,7 +158,7 @@ export type InvoiceState = {
 
 const InvoiceFormSchema = z.object({
     id: z.string(),
-    customerId: z.string().min(1, { message: "This field is required" }),
+    customerId: z.string().min(1, { message: "Please select a customer" }),
     amount: z.coerce
     .number()
     .gt(0, {message: "Please enter an amount greater than 0$"}),
