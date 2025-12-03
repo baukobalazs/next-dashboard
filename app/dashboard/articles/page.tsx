@@ -24,6 +24,7 @@ export default async function ArticlesPage(props: {
 
   const { articles, total } = await fetchArticles(currentPage, query, tagSlug);
   const tags = await fetchTags();
+
   const totalPages = Math.ceil(total / 9);
 
   return (
