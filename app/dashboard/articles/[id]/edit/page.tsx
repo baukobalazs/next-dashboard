@@ -1,15 +1,18 @@
 import { auth } from "@/auth";
 import { fetchArticleById } from "@/app/lib/articles-actions";
 import { redirect, notFound } from "next/navigation";
-
-import Typography from "@mui/material/Typography";
 import ArticleForm from "@/app/ui/articles/articles-form";
 
-export default async function EditArticlePage(props: {
-  params: Promise<{ id: string }>;
-}) {
+type EditArticlePageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function EditArticlePage({
+  params,
+}: EditArticlePageProps) {
   const session = await auth();
-  const params = await props.params;
 
   if (!session?.user?.id) {
     redirect("/login");
@@ -28,9 +31,7 @@ export default async function EditArticlePage(props: {
 
   return (
     <div className="w-full">
-      <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
-        Edit Article
-      </Typography>
+      <h1 className="text-2xl font-semibold mb-6">Edit Article</h1>
       <ArticleForm userId={session.user.id} article={article} />
     </div>
   );
