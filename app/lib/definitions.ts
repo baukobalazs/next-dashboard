@@ -129,3 +129,44 @@ export type CreditCardForm = {
   is_default: boolean;
 };
 
+
+
+export type Article = {
+  id: string;
+  title: string;
+  content: string; // HTML
+  excerpt: string | null;
+  author_id: string;
+  author_name?: string;
+  author_email?: string;
+  cover_image_url: string | null;
+  status: 'draft' | 'published';
+  is_public: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+  tags?: Tag[];
+};
+
+export type Tag = {
+  id: string;
+  name: string;
+  slug: string;
+  created_at?: string;
+};
+
+export type ArticleWithTags = Article & {
+  tags: Tag[];
+};
+
+export type ArticleFormData = {
+  title: string;
+  content: string;
+  excerpt: string;
+  cover_image_url: string;
+  status: 'draft' | 'published';
+  is_public: boolean;
+  tags: string[];
+};
+
+

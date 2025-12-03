@@ -1,7 +1,58 @@
-import React from "react";
+import { auth } from "@/auth";
+import { fetchArticles, fetchTags } from "@/app/lib/articles-actions";
 
-const page = () => {
-  return <div></div>;
+import { Button } from "@mui/material";
+import Link from "next/link";
+import AddIcon from "@mui/icons-material/Add";
+import { Suspense } from "react";
+import Pagination from "@/app/ui/invoices/pagination";
+import ArticlesList from "@/app/ui/articles/articles-list";
+import ArticlesFilter from "@/app/ui/articles/articles-filter";
+
+type SearchParams = {
+  query?: string;
+  tag?: string;
+  page?: string;
 };
 
-export default page;
+export default async function ArticlesPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const session = await auth();
+  const query = searchParams?.query || "";
+  const tagSlug = searchParams?.tag || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
+  const { articles, total } = await fetchArticles(currentPage, query, tagSlug);
+  const tags = await fetchTags();
+  const totalPages = Math.ceil(total / 9);
+
+  return (
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between mb-6">
+        <h1 className="text-2xl font-semibold">Articles</h1>
+        {session?.user && (
+          <Link href="/dashboard/articles/new">
+            <Button variant="contained" startIcon={<AddIcon />}>
+              New Article
+            </Button>
+          </Link>
+        )}
+      </div>
+
+      <Suspense fallback={<div>Loading filters...</div>}>
+        <ArticlesFilter tags={tags} />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading articles...</div>}>
+        <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
+      </Suspense>
+
+      <div className="mt-8 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </div>
+  );
+}

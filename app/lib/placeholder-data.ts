@@ -1,4 +1,4 @@
-import { Revenue, InvoicesTable, CustomersTableType, CreditCard } from "./definitions";
+import { Revenue, InvoicesTable, CustomersTableType, CreditCard, Article, Tag } from "./definitions";
 
 const MOCK_USERS = [
   {
@@ -159,7 +159,7 @@ const MOCK_INVOICES: InvoicesTable[] = [
      deadline: '2025-12-31'
   },
 ];
-// Add to placeholder-data.ts or your mock file
+
 export const MOCK_CREDIT_CARDS: CreditCard[] = [
   {
     id: '1',
@@ -201,5 +201,49 @@ export const MOCK_CREDIT_CARDS: CreditCard[] = [
 export { MOCK_CUSTOMERS, MOCK_USERS, MOCK_REVENUE, MOCK_INVOICES };
 
 
+export const MOCK_ARTICLES: Article[] = [
+  {
+    id: '1',
+    title: 'How to Detect Fraud Patterns in Recurring Invoices',
+    content:
+      '<p>Identifying anomalies in recurring invoices is essential for finance teams. Modern analytics tools can highlight unusual patterns, duplicated payments, or sudden amount changes that may indicate fraud...</p>',
+    excerpt:
+      'Learn how finance teams detect unusual patterns in recurring invoices using modern analytics tools.',
+    author_id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    author_name: 'John Doe',
+    cover_image_url: 'https://example.com/invoice-fraud.jpg',
+    status: 'published',
+    is_public: true,
+    published_at: '2025-03-15T10:00:00Z',
+    created_at: '2025-03-15T10:00:00Z',
+    updated_at: '2025-03-15T10:00:00Z',
+  },
+  {
+    id: '2',
+    title: 'Improving Revenue Forecasting with Data-Driven Models',
+    content:
+      '<p>Accurate revenue forecasting is crucial for long-term planning. Data-driven models help organizations predict cash flow, seasonal fluctuations, and customer churn more precisely...</p>',
+    excerpt:
+      'Discover how modern data-driven models enhance revenue forecasting accuracy for SaaS and service businesses.',
+    author_id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    author_name: 'John Doe',
+    cover_image_url: 'https://example.com/revenue-forecast.jpg',
+    status: 'published',
+    is_public: true,
+    published_at: '2025-03-10T10:00:00Z',
+    created_at: '2025-03-10T10:00:00Z',
+    updated_at: '2025-03-10T10:00:00Z',
+  },
+];
+
+
+export const MOCK_TAGS: Tag[] = [
+  { id: '1', name: 'Finance', slug: 'finance' },
+  { id: '2', name: 'Invoices', slug: 'invoices' },
+  { id: '3', name: 'Analytics', slug: 'analytics' },
+  { id: '4', name: 'Revenue', slug: 'revenue' },
+  { id: '5', name: 'Data Insights', slug: 'data-insights' },
+  { id: '6', name: 'Business Strategy', slug: 'business-strategy' },
+];
 
 
