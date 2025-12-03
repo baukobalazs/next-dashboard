@@ -13,15 +13,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
 import { formatDateToLocal } from "@/app/lib/utils";
-// import DeleteArticleButton from "@/app/ui/articles/delete-article-button";
+import DeleteArticleButton from "@/app/ui/articles/delete-article-button";
 
-type ArticlePageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage(props: {
+  params: Promise<{ id: string }>;
+}) {
+  const params = await props.params;
   const article = await fetchArticleById(params.id);
 
   if (!article) {
@@ -30,6 +27,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const session = await auth();
   const isAuthor = session?.user?.id === article.author_id;
+  const isAdmin = session?.user?.role === "admin";
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -89,7 +87,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           />
 
           {/* Author Actions */}
-          {isAuthor && (
+          {(isAuthor || session?.user?.role === "admin") && (
             <Box
               sx={{
                 display: "flex",
@@ -105,10 +103,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   Edit Article
                 </Button>
               </Link>
-              {/* <DeleteArticleButton
+              <DeleteArticleButton
                 articleId={article.id}
                 userId={session.user.id}
-              /> */}
+              />
             </Box>
           )}
         </CardContent>
