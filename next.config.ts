@@ -1,7 +1,14 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// next.config.js
+const nextConfig = {
+  webpack: (config: any) => {
+    config.module.rules.push({
+      test: /\.m?js$/,
+      include: /@mui/,
+      type: 'javascript/auto',
+    });
+    return config;
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
+

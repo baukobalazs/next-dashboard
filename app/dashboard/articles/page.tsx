@@ -5,9 +5,9 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { Suspense } from "react";
-// import Pagination from "@/app/ui/invoices/pagination";
-// import ArticlesList from "@/app/ui/articles/articles-list";
-// import ArticlesFilter from "@/app/ui/articles/articles-filter";
+import Pagination from "@/app/ui/invoices/pagination";
+import ArticlesList from "@/app/ui/articles/articles-list";
+import ArticlesFilter from "@/app/ui/articles/articles-filter";
 
 export default async function ArticlesPage(props: {
   searchParams?: Promise<{
@@ -39,17 +39,17 @@ export default async function ArticlesPage(props: {
         )}
       </div>
 
-      {/* <Suspense fallback={<div>Loading filters...</div>}>
+      <Suspense fallback={<div>Loading filters...</div>}>
         <ArticlesFilter tags={tags} />
-      </Suspense> */}
+      </Suspense>
 
-      {/* <Suspense fallback={<div>Loading articles...</div>}>
+      <Suspense fallback={<div>Loading articles...</div>}>
         <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
-      </Suspense> */}
+      </Suspense>
 
-      {/* <div className="mt-8 flex w-full justify-center">
+      <div className="mt-8 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div> */}
+      </div>
     </div>
   );
 }
