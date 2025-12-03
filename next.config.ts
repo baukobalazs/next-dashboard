@@ -8,6 +8,9 @@ const nextConfig = {
     });
     return config;
   },
+   turbopack: {
+    resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+  },
 };
 
 module.exports = nextConfig;
