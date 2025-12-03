@@ -282,7 +282,7 @@ export async function fetchArticles(
           AND author_id = ${userId}
       `;
     } else {
-      // No filters or complex combinations - just get all published
+      // No filters 
       articlesResult = await sql`
         SELECT
           articles.*,

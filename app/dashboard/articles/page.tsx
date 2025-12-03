@@ -19,7 +19,12 @@ export default async function ArticlesPage(props: {
   const tagSlug = searchParams?.tag || "";
   const currentPage = Number(searchParams?.page) || 1;
 
-  const { articles, total } = await fetchArticles(currentPage, query, tagSlug);
+  const { articles, total } = await fetchArticles(
+    currentPage,
+    query,
+    tagSlug,
+    session?.user?.id
+  );
   const tags = await fetchTags();
   const totalPages = Math.ceil(total / 9);
 
