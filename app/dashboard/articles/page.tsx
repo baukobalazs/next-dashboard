@@ -9,17 +9,14 @@ import Pagination from "@/app/ui/invoices/pagination";
 import ArticlesList from "@/app/ui/articles/articles-list";
 import ArticlesFilter from "@/app/ui/articles/articles-filter";
 
-type SearchParams = {
-  query?: string;
-  tag?: string;
-  page?: string;
-};
-
-export default async function ArticlesPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
+export default async function ArticlesPage(props: {
+  searchParams?: Promise<{
+    query?: string;
+    tag?: string;
+    page?: string;
+  }>;
 }) {
+  const searchParams = await props.searchParams;
   const session = await auth();
   const query = searchParams?.query || "";
   const tagSlug = searchParams?.tag || "";
