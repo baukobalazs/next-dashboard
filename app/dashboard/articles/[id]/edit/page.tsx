@@ -5,16 +5,11 @@ import { redirect, notFound } from "next/navigation";
 import Typography from "@mui/material/Typography";
 import ArticleForm from "@/app/ui/articles/articles-form";
 
-type EditArticlePageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function EditArticlePage({
-  params,
-}: EditArticlePageProps) {
+export default async function EditArticlePage(props: {
+  params: Promise<{ id: string }>;
+}) {
   const session = await auth();
+  const params = await props.params;
 
   if (!session?.user?.id) {
     redirect("/login");
