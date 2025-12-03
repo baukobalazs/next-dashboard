@@ -3,17 +3,13 @@ import { fetchArticleById } from "@/app/lib/articles-actions";
 import { redirect, notFound } from "next/navigation";
 import ArticleForm from "@/app/ui/articles/articles-form";
 
-type EditArticlePageProps = {
-  params: {
+export default async function EditArticlePage(props: {
+  params: Promise<{
     id: string;
-  };
-};
-
-export default async function EditArticlePage({
-  params,
-}: EditArticlePageProps) {
+  }>;
+}) {
   const session = await auth();
-
+  const params = await props.params;
   if (!session?.user?.id) {
     redirect("/login");
   }

@@ -6,13 +6,10 @@ import { formatDateToLocal } from "@/app/lib/utils";
 import DeleteArticleButton from "@/app/ui/articles/delete-article-button";
 import ArticleViewClient from "@/app/ui/articles/article-view-client";
 
-type ArticlePageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage(props: {
+  params: Promise<{ id: string }>;
+}) {
+  const params = await props.params;
   const article = await fetchArticleById(params.id);
 
   if (!article) {
