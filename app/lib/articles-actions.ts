@@ -1,11 +1,11 @@
-'use server'
 import { z } from 'zod';
+import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { Article, Tag, ArticleWithTags } from './definitions';
 
 import { put } from '@vercel/blob';
 import { MOCK_ARTICLES, MOCK_TAGS } from './placeholder-data';
-import postgres from 'postgres';
+
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
 
@@ -206,43 +206,100 @@ export async function fetchArticles(
   }
 
   try {
-    const whereConditions = ['status = \'published\''];
-    
-    if (query) {
-      whereConditions.push(`(title ILIKE '%${query}%' OR excerpt ILIKE '%${query}%')`);
+    let articlesResult;
+    let countResult;
+
+    if (tagSlug && !query && !userId) {
+      // Filter by tag only
+      articlesResult = await sql`
+        SELECT
+          articles.*,
+          users.name as author_name,
+          users.email as author_email
+        FROM articles
+        JOIN users ON articles.author_id = users.id
+        WHERE articles.status = 'published'
+          AND articles.id IN (
+            SELECT article_id FROM article_tags
+            JOIN tags ON article_tags.tag_id = tags.id
+            WHERE tags.slug = ${tagSlug}
+          )
+        ORDER BY articles.published_at DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `;
+
+      countResult = await sql`
+        SELECT COUNT(*) as total
+        FROM articles
+        WHERE status = 'published'
+          AND id IN (
+            SELECT article_id FROM article_tags
+            JOIN tags ON article_tags.tag_id = tags.id
+            WHERE tags.slug = ${tagSlug}
+          )
+      `;
+    } else if (query && !tagSlug && !userId) {
+      // Search only
+      articlesResult = await sql`
+        SELECT
+          articles.*,
+          users.name as author_name,
+          users.email as author_email
+        FROM articles
+        JOIN users ON articles.author_id = users.id
+        WHERE articles.status = 'published'
+          AND (articles.title ILIKE ${'%' + query + '%'} OR articles.excerpt ILIKE ${'%' + query + '%'})
+        ORDER BY articles.published_at DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `;
+
+      countResult = await sql`
+        SELECT COUNT(*) as total
+        FROM articles
+        WHERE status = 'published'
+          AND (title ILIKE ${'%' + query + '%'} OR excerpt ILIKE ${'%' + query + '%'})
+      `;
+    } else if (userId && !query && !tagSlug) {
+      // Filter by user only
+      articlesResult = await sql`
+        SELECT
+          articles.*,
+          users.name as author_name,
+          users.email as author_email
+        FROM articles
+        JOIN users ON articles.author_id = users.id
+        WHERE articles.status = 'published'
+          AND articles.author_id = ${userId}
+        ORDER BY articles.published_at DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `;
+
+      countResult = await sql`
+        SELECT COUNT(*) as total
+        FROM articles
+        WHERE status = 'published'
+          AND author_id = ${userId}
+      `;
+    } else {
+      // No filters or complex combinations - just get all published
+      articlesResult = await sql`
+        SELECT
+          articles.*,
+          users.name as author_name,
+          users.email as author_email
+        FROM articles
+        JOIN users ON articles.author_id = users.id
+        WHERE articles.status = 'published'
+        ORDER BY articles.published_at DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `;
+
+      countResult = await sql`
+        SELECT COUNT(*) as total
+        FROM articles
+        WHERE status = 'published'
+      `;
     }
-
-    if (userId) {
-      whereConditions.push(`author_id = '${userId}'`);
-    }
-
-    if (tagSlug) {
-      whereConditions.push(`id IN (
-        SELECT article_id FROM article_tags
-        JOIN tags ON article_tags.tag_id = tags.id
-        WHERE tags.slug = '${tagSlug}'
-      )`);
-    }
-
-    const whereClause = whereConditions.join(' AND ');
-
-    const articlesResult = await sql`
-      SELECT
-        articles.*,
-        users.name as author_name,
-        users.email as author_email
-      FROM articles
-      JOIN users ON articles.author_id = users.id
-      WHERE ${sql.raw(whereClause)}
-      ORDER BY articles.published_at DESC
-      LIMIT ${limit} OFFSET ${offset}
-    `;
-
-    const countResult = await sql`
-      SELECT COUNT(*) as total
-      FROM articles
-      WHERE ${sql.raw(whereClause)}
-    `;
 
     const articles = articlesResult.rows as Article[];
     const total = parseInt(countResult.rows[0].total);
@@ -319,4 +376,3 @@ export async function fetchTags(): Promise<Tag[]> {
     return [];
   }
 }
-
