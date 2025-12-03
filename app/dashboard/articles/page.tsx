@@ -40,11 +40,11 @@ export default async function ArticlesPage(props: {
       </div>
 
       <Suspense fallback={<div>Loading filters...</div>}>
-        {/* <ArticlesFilter tags={tags} /> */}
+        <ArticlesFilter tags={tags} />
       </Suspense>
 
       <Suspense fallback={<div>Loading articles...</div>}>
-        <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
+        {/* <ArticlesList articles={articles} isAuthenticated={!!session?.user} /> */}
       </Suspense>
 
       <div className="mt-8 flex w-full justify-center">
