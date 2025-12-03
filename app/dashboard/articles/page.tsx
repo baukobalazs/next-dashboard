@@ -39,9 +39,13 @@ export default async function ArticlesPage(props: {
         )}
       </div>
 
-      <ArticlesFilter tags={tags} />
+      <Suspense fallback={<div>Loading filters...</div>}>
+        {/* <ArticlesFilter tags={tags} /> */}
+      </Suspense>
 
-      <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
+      <Suspense fallback={<div>Loading articles...</div>}>
+        <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
+      </Suspense>
 
       <div className="mt-8 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
