@@ -6,7 +6,7 @@ import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import { Suspense } from "react";
 import Pagination from "@/app/ui/invoices/pagination";
-import ArticlesList from "@/app/ui/articles/articles-list";
+// import ArticlesList from "@/app/ui/articles/articles-list";
 import ArticlesFilter from "@/app/ui/articles/articles-filter";
 
 export default async function ArticlesPage(props: {
@@ -43,9 +43,9 @@ export default async function ArticlesPage(props: {
         <ArticlesFilter tags={tags} />
       </Suspense>
 
-      <Suspense fallback={<div>Loading articles...</div>}>
-        {/* <ArticlesList articles={articles} isAuthenticated={!!session?.user} /> */}
-      </Suspense>
+      {/* <Suspense fallback={<div>Loading articles...</div>}>
+        <ArticlesList articles={articles} isAuthenticated={!!session?.user} />
+      </Suspense> */}
 
       <div className="mt-8 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
