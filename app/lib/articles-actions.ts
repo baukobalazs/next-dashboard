@@ -372,7 +372,7 @@ export async function fetchTags(): Promise<Tag[]> {
     const result = await sql`
       SELECT * FROM tags ORDER BY name ASC
     `;
-    return result.rows as Tag[];
+    return result as Tag[];
   } catch (error) {
     console.error('Database error:', error);
     return [];
