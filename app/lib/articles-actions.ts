@@ -239,7 +239,7 @@ export async function fetchArticles(
             WHERE tags.slug = ${tagSlug}
           )
       `;
-    } else if (query && !tagSlug && !userId) {
+    } else if (query && !tagSlug) {
       // Search only
       articlesResult = await sql`
         SELECT
