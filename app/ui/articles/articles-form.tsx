@@ -27,7 +27,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 type ArticleFormProps = {
   userId: string;
-  article?: Article;
+  article?: ArticleWithTags;
   existingTags: Tag[];
 };
 
@@ -37,6 +37,10 @@ export default function ArticleForm({
   existingTags,
 }: ArticleFormProps) {
   const router = useRouter();
+
+  const [selectedTags, setSelectedTags] = useState<string[]>(
+    article?.tags?.map((t) => t.name) || []
+  );
   const [formData, setFormData] = useState({
     title: article?.title || "",
     content: article?.content || "",
@@ -44,7 +48,7 @@ export default function ArticleForm({
     cover_image_url: article?.cover_image_url || "",
     status: article?.status || "draft",
     is_public: article?.is_public ? true : false,
-    tags: article?.tags?.map((t) => t.name).join(", ") || "",
+    tags: article?.tags?.map((t) => t.name).join(",") || "",
   });
 
   const [previewImage, setPreviewImage] = useState<string | null>(
@@ -72,9 +76,6 @@ export default function ArticleForm({
       reader.readAsDataURL(file);
     }
   };
-  const [selectedTags, setSelectedTags] = useState(
-    formData.tags ? formData.tags.split(",").map((t) => t.trim()) : []
-  );
 
   const handleCancel = () => {
     router.push("/dashboard/articles");
@@ -200,13 +201,13 @@ export default function ArticleForm({
               }}
               renderInput={(params) => (
                 <TextField
-                  name="tags"
                   {...params}
                   label="Tags"
                   helperText="Add or select multiple tags"
                 />
               )}
             />
+            <input type="hidden" name="tags" value={formData.tags} />
 
             {/* Status & Visibility */}
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
@@ -232,7 +233,6 @@ export default function ArticleForm({
               <FormControlLabel
                 control={
                   <Switch
-                    name="is_public"
                     checked={formData.is_public}
                     onChange={(e) =>
                       setFormData({ ...formData, is_public: e.target.checked })
@@ -241,6 +241,11 @@ export default function ArticleForm({
                   />
                 }
                 label="Public"
+              />
+              <input
+                type="hidden"
+                name="is_public"
+                value={formData.is_public.toString()}
               />
             </Box>
 

@@ -122,7 +122,7 @@ export async function saveArticle(
       // Handle tags
       if (savedArticleId) {
         // Remove old tags
-         await sql`DELETE FROM article_tags WHERE article_id = ${savedArticleId}`;
+        await sql`DELETE FROM article_tags WHERE article_id = ${savedArticleId}`;
 
         // Add new tags
         for (const tagName of tagNames) {
@@ -141,7 +141,7 @@ export async function saveArticle(
           await sql`
             INSERT INTO article_tags (article_id, tag_id)
             VALUES (${savedArticleId}, ${tagId})
-            ON CONFLICT DO UPDATE SET article_id = ${savedArticleId}, tag_id = ${tagId} 
+            ON CONFLICT DO NOTHING
           `;
         }
       }
