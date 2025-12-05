@@ -141,7 +141,7 @@ export async function saveArticle(
           await sql`
             INSERT INTO article_tags (article_id, tag_id)
             VALUES (${savedArticleId}, ${tagId})
-            ON CONFLICT DO UPDATE
+            ON CONFLICT DO UPDATE SET article_id = ${savedArticleId}, tag_id = ${tagId} 
           `;
         }
       }
