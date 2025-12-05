@@ -116,7 +116,7 @@ export async function saveArticle(
           VALUES (${title}, ${content}, ${excerpt || null}, ${userId}, ${imageUrl}, ${status}, ${is_public}, ${published_at})
           RETURNING id
         `;
-        savedArticleId = result.rows[0].id;
+        savedArticleId = result[0].id;
       }
 
       // Handle tags
@@ -344,9 +344,9 @@ export async function fetchArticleById(id: string): Promise<ArticleWithTags | nu
       WHERE articles.id = ${id}
     `;
 
-    if (result.rowCount === 0) return null;
+    if (!result) return null;
 
-    const article = result.rows[0] as Article;
+    const article = result[0] as Article;
 
     const tagsResult = await sql`
       SELECT tags.*
