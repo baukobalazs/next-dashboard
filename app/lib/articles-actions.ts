@@ -302,7 +302,7 @@ export async function fetchArticles(
       `;
     }
 
-    const articles = articlesResult.rows as Article[];
+    const articles = articlesResult as Article[];
     const total = parseInt(countResult.total);
     console.log('Articles: ', articles);
     console.log('Total: ', total);
@@ -315,7 +315,7 @@ export async function fetchArticles(
           JOIN article_tags ON tags.id = article_tags.tag_id
           WHERE article_tags.article_id = ${article.id}
         `;
-        return { ...article, tags: tagsResult.rows as Tag[] };
+        return { ...article, tags: tagsResult as Tag[] };
       })
     );
 
@@ -355,7 +355,7 @@ export async function fetchArticleById(id: string): Promise<ArticleWithTags | nu
       WHERE article_tags.article_id = ${id}
     `;
 
-    return { ...article, tags: tagsResult.rows as Tag[] };
+    return { ...article, tags: tagsResult as Tag[] };
   } catch (error) {
     console.error('Database error:', error);
     return null;
