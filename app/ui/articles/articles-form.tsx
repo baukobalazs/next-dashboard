@@ -200,6 +200,7 @@ export default function ArticleForm({
               }}
               renderInput={(params) => (
                 <TextField
+                  name="tags"
                   {...params}
                   label="Tags"
                   helperText="Add or select multiple tags"
