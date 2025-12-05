@@ -50,6 +50,9 @@ export async function saveArticle(
   prevState: ArticleState,
   formData: FormData
 ) {
+
+  console.log('FormData tags:', formData.get('tags'));
+
   const validatedFields = ArticleSchema.safeParse({
     title: formData.get('title'),
     content: formData.get('content'),
@@ -60,6 +63,8 @@ export async function saveArticle(
     tags: formData.get('tags'),
   });
 
+  console.log('Validation errors:', validatedFields.error);
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -69,6 +74,8 @@ export async function saveArticle(
 
   const { title, content, excerpt, cover_image_url, status, is_public, tags } = validatedFields.data;
 
+
+  
   // Handle cover image upload
   let imageUrl = cover_image_url || null;
   const imageFile = formData.get('cover_image') as File | null;
@@ -89,6 +96,10 @@ export async function saveArticle(
 
   const published_at = status === 'published' ? new Date().toISOString() : null;
   const tagNames = tags.split(',').map((t) => t.trim()).filter(Boolean);
+
+    console.log('Tags after validation:', tags);
+  
+  console.log('Tag names array:', tagNames);
 
   if (!USE_MOCK) {
     try {
