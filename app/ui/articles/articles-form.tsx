@@ -47,6 +47,10 @@ export default function ArticleForm({
     tags: article?.tags?.map((t) => t.name).join(",") || "",
   });
 
+  const [selectedTags, setSelectedTags] = useState<string[]>(
+    article?.tags?.map((t) => t.name) || []
+  );
+
   const [previewImage, setPreviewImage] = useState<string | null>(
     article?.cover_image_url || null
   );
@@ -72,9 +76,6 @@ export default function ArticleForm({
       reader.readAsDataURL(file);
     }
   };
-  const [selectedTags, setSelectedTags] = useState(
-    formData.tags ? formData.tags.split(",").map((t) => t.trim()) : []
-  );
 
   const handleCancel = () => {
     router.push("/dashboard/articles");
