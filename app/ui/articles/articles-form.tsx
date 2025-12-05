@@ -27,7 +27,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 type ArticleFormProps = {
   userId: string;
-  article?: ArticleWithTags;
+  article?: Article;
   existingTags: Tag[];
 };
 
@@ -43,7 +43,7 @@ export default function ArticleForm({
     excerpt: article?.excerpt || "",
     cover_image_url: article?.cover_image_url || "",
     status: article?.status || "draft",
-    is_public: article?.is_public ?? true,
+    is_public: article?.is_public ? true : false,
     tags: article?.tags?.map((t) => t.name).join(", ") || "",
   });
 
