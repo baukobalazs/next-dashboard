@@ -37,10 +37,6 @@ export default function ArticleForm({
   existingTags,
 }: ArticleFormProps) {
   const router = useRouter();
-
-  const [selectedTags, setSelectedTags] = useState<string[]>(
-    article?.tags?.map((t) => t.name) || []
-  );
   const [formData, setFormData] = useState({
     title: article?.title || "",
     content: article?.content || "",
@@ -76,6 +72,9 @@ export default function ArticleForm({
       reader.readAsDataURL(file);
     }
   };
+  const [selectedTags, setSelectedTags] = useState(
+    formData.tags ? formData.tags.split(",").map((t) => t.trim()) : []
+  );
 
   const handleCancel = () => {
     router.push("/dashboard/articles");
