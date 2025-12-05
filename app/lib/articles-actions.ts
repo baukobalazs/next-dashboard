@@ -302,7 +302,7 @@ export async function fetchArticles(
       `;
     }
 
-    const articles = articlesResult.rows as Article[];
+    const articles = articlesResult as Article[];
     const total = parseInt(countResult.total);
     console.log('Articles: ', articles);
     console.log('Total: ', total);
