@@ -56,7 +56,7 @@ export async function saveArticle(
     excerpt: formData.get('excerpt'),
     cover_image_url: formData.get('cover_image_url'),
     status: formData.get('status'),
-    is_public: formData.get('is_public'),
+    is_public: formData.get('is_public') === 'true',
     tags: formData.get('tags'),
   });
 
