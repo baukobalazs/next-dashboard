@@ -210,7 +210,7 @@ export async function fetchArticles(
     let articlesResult;
     let countResult;
 
-    if (tagSlug && !query && !userId) {
+    if (tagSlug && !query) {
       // Filter by tag only
       articlesResult = await sql`
         SELECT
