@@ -101,7 +101,7 @@ export default function ArticlesList({
                 <Box
                   sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mb: 2 }}
                 >
-                  {article.tags?.slice(0, 3).map((tag) => (
+                  {article.tags?.slice(0, 8).map((tag) => (
                     <Chip key={tag.id} label={tag.name} size="small" />
                   ))}
                 </Box>
