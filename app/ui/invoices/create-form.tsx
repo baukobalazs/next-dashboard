@@ -113,7 +113,7 @@ export default function CreateInvoiceForm({
             Set the invoice status
           </legend>
           <div
-            className={`rounded-md border border-gray-200 px-[14px] py-3  ${bg}`}
+            className={`rounded-md border border-gray-200 px-3.5 py-3  ${bg}`}
           >
             <div className="flex gap-4">
               <div className="flex items-center">
