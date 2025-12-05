@@ -122,7 +122,7 @@ export async function saveArticle(
       // Handle tags
       if (savedArticleId) {
         // Remove old tags
-        await sql`DELETE FROM article_tags WHERE article_id = ${savedArticleId}`;
+        // await sql`DELETE FROM article_tags WHERE article_id = ${savedArticleId}`;
 
         // Add new tags
         for (const tagName of tagNames) {
