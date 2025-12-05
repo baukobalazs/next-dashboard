@@ -301,9 +301,9 @@ export async function fetchArticles(
         WHERE status = 'published'
       `;
     }
-
+   
     const articles = articlesResult as Article[];
-    const total = parseInt(countResult[0]);
+    const total = countResult[0]
     console.log('Articles: ', articles);
     console.log('Total: ', total);
     // Fetch tags for each article
