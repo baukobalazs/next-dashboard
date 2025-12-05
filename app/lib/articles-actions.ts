@@ -135,7 +135,7 @@ export async function saveArticle(
             ON CONFLICT (slug) DO UPDATE SET name = ${tagName}
             RETURNING id
           `;
-          const tagId = tagResult[0].id;
+          const tagId = tagResult[0];
 
           // Link tag to article
           await sql`
