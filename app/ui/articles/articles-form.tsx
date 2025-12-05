@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import { Article } from "@/app/lib/definitions";
+import { Article, ArticleWithTags, Tag } from "@/app/lib/definitions";
 import { saveArticle, ArticleState } from "@/app/lib/articles-actions";
 import TipTapEditor from "./tiptap-editor";
 import Box from "@mui/material/Box";
@@ -23,13 +23,19 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import { useRouter } from "next/navigation";
+import Autocomplete from "@mui/material/Autocomplete";
 
 type ArticleFormProps = {
   userId: string;
-  article?: Article;
+  article?: ArticleWithTags;
+  existingTags: Tag[];
 };
 
-export default function ArticleForm({ userId, article }: ArticleFormProps) {
+export default function ArticleForm({
+  userId,
+  article,
+  existingTags,
+}: ArticleFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: article?.title || "",
@@ -66,6 +72,9 @@ export default function ArticleForm({ userId, article }: ArticleFormProps) {
       reader.readAsDataURL(file);
     }
   };
+  const [selectedTags, setSelectedTags] = useState(
+    formData.tags ? formData.tags.split(",").map((t) => t.trim()) : []
+  );
 
   const handleCancel = () => {
     router.push("/dashboard/articles");
@@ -180,17 +189,22 @@ export default function ArticleForm({ userId, article }: ArticleFormProps) {
             </Box>
 
             {/* Tags */}
-            <TextField
-              fullWidth
-              label="Tags"
-              name="tags"
-              value={formData.tags}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value })
-              }
-              disabled={isPending}
-              helperText="Comma-separated tags (e.g., Technology, AI, Science)"
-              error={!!state.errors?.tags}
+            <Autocomplete
+              multiple
+              freeSolo
+              options={existingTags.map((t) => t.name)}
+              value={selectedTags}
+              onChange={(event, newValue) => {
+                setSelectedTags(newValue);
+                setFormData({ ...formData, tags: newValue.join(",") });
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Tags"
+                  helperText="Add or select multiple tags"
+                />
+              )}
             />
 
             {/* Status & Visibility */}

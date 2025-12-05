@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { fetchArticleById } from "@/app/lib/articles-actions";
+import { fetchArticleById, fetchTags } from "@/app/lib/articles-actions";
 import { redirect, notFound } from "next/navigation";
 import ArticleForm from "@/app/ui/articles/articles-form";
 
@@ -10,6 +10,7 @@ export default async function EditArticlePage(props: {
 }) {
   const session = await auth();
   const params = await props.params;
+  const tags = await fetchTags();
   if (!session?.user?.id) {
     redirect("/login");
   }
@@ -28,7 +29,11 @@ export default async function EditArticlePage(props: {
   return (
     <div className="w-full">
       <h1 className="text-2xl font-semibold mb-6">Edit Article</h1>
-      <ArticleForm userId={session.user.id} article={article} />
+      <ArticleForm
+        userId={session.user.id}
+        article={article}
+        existingTags={tags}
+      />
     </div>
   );
 }
