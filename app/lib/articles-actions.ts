@@ -303,7 +303,7 @@ export async function fetchArticles(
     }
 
     const articles = articlesResult as Article[];
-    const total = countResult;
+    const total = countResult.total;
     console.log('Articles: ', articles);
     console.log('Total: ', total);
     // Fetch tags for each article
