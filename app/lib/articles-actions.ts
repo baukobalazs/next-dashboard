@@ -135,7 +135,7 @@ export async function saveArticle(
             ON CONFLICT (slug) DO UPDATE SET name = ${tagName}
             RETURNING id
           `;
-          const tagId = tagResult.rows[0].id;
+          const tagId = tagResult[0].id;
 
           // Link tag to article
           await sql`
@@ -302,7 +302,7 @@ export async function fetchArticles(
       `;
     }
 
-    const articles = articlesResult as Article[];
+    const articles = articlesResult.rows as Article[];
     const total = parseInt(countResult.total);
     console.log('Articles: ', articles);
     console.log('Total: ', total);
