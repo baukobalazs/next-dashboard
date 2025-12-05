@@ -44,7 +44,6 @@ export default function ArticleForm({
     cover_image_url: article?.cover_image_url || "",
     status: article?.status || "draft",
     is_public: article?.is_public ? true : false,
-    tags: article?.tags?.map((t) => t.name).join(",") || "",
   });
 
   const [selectedTags, setSelectedTags] = useState<string[]>(
@@ -197,7 +196,6 @@ export default function ArticleForm({
               value={selectedTags}
               onChange={(event, newValue) => {
                 setSelectedTags(newValue);
-                setFormData({ ...formData, tags: newValue.join(",") });
               }}
               renderInput={(params) => (
                 <TextField
@@ -207,7 +205,7 @@ export default function ArticleForm({
                 />
               )}
             />
-            <input type="hidden" name="tags" value={formData.tags} />
+            <input type="hidden" name="tags" value={selectedTags.join(",")} />
 
             {/* Status & Visibility */}
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
