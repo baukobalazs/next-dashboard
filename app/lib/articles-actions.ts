@@ -304,7 +304,8 @@ export async function fetchArticles(
 
     const articles = articlesResult.rows as Article[];
     const total = parseInt(countResult.total);
-
+    console.log('Articles: ', articles);
+    console.log('Total: ', total);
     // Fetch tags for each article
     const articlesWithTags: ArticleWithTags[] = await Promise.all(
       articles.map(async (article) => {
