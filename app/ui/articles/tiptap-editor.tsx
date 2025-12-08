@@ -17,7 +17,8 @@ import ImageIcon from "@mui/icons-material/Image";
 import LinkIcon from "@mui/icons-material/Link";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type TipTapEditorProps = {
   content: string;
@@ -25,6 +26,9 @@ type TipTapEditorProps = {
 };
 
 export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -63,10 +67,68 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
     return null;
   }
 
-  const addImage = () => {
-    const url = window.prompt("Image URL:");
+  const uploadImage = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error("Image upload error:", error);
+      alert("Failed to upload image");
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size should be less than 5MB");
+      return;
+    }
+
+    const url = await uploadImage(file);
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const addImage = () => {
+    const choice = window.confirm(
+      "Upload image file? (OK)\nOr paste URL? (Cancel)"
+    );
+
+    if (choice) {
+      fileInputRef.current?.click();
+    } else {
+      const url = window.prompt("Image URL:");
+      if (url) {
+        editor.chain().focus().setImage({ src: url }).run();
+      }
     }
   };
 
@@ -86,6 +148,15 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
         overflow: "hidden",
       }}
     >
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={handleImageUpload}
+      />
+
       {/* Toolbar */}
       <Box
         sx={{
@@ -176,8 +247,8 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
 
         <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
-        <IconButton size="small" onClick={addImage}>
-          <ImageIcon />
+        <IconButton size="small" onClick={addImage} disabled={isUploading}>
+          {isUploading ? <CircularProgress size={20} /> : <ImageIcon />}
         </IconButton>
 
         <IconButton size="small" onClick={setLink}>
