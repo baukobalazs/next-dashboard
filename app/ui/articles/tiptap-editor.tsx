@@ -118,18 +118,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   };
 
   const addImage = () => {
-    const choice = window.confirm(
-      "Upload image file? (OK)\nOr paste URL? (Cancel)"
-    );
-
-    if (choice) {
-      fileInputRef.current?.click();
-    } else {
-      const url = window.prompt("Image URL:");
-      if (url) {
-        editor.chain().focus().setImage({ src: url }).run();
-      }
-    }
+    fileInputRef.current?.click();
   };
 
   const setLink = () => {
