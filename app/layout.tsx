@@ -3,6 +3,7 @@ import { inter } from "./ui/fonts";
 import { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import ThemeRegistry from "./ThemeRegistry";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
@@ -24,6 +25,7 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ key: "css" }}>
           <ThemeRegistry>{children}</ThemeRegistry>
         </AppRouterCacheProvider>
+        <Analytics />
       </body>
     </html>
   );
