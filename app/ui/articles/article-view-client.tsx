@@ -13,6 +13,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
 import { formatDateToLocal } from "@/app/lib/utils";
 import DeleteArticleButton from "./delete-article-button";
+import { ThemeContext } from "@/app/ThemeRegistry";
+import { useContext } from "react";
 
 type ArticleViewClientProps = {
   article: ArticleWithTags;
@@ -25,6 +27,10 @@ export default function ArticleViewClient({
   isAuthor,
   userId,
 }: ArticleViewClientProps) {
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <Box sx={{ mb: 3 }}>
@@ -34,7 +40,7 @@ export default function ArticleViewClient({
       </Box>
 
       <Card>
-        <CardContent>
+        <CardContent className={`${bg}`}>
           <Typography variant="h3" component="h1" sx={{ mb: 2 }}>
             {article.title}
           </Typography>

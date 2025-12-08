@@ -17,8 +17,9 @@ import ImageIcon from "@mui/icons-material/Image";
 import LinkIcon from "@mui/icons-material/Link";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 type TipTapEditorProps = {
   content: string;
@@ -28,7 +29,9 @@ type TipTapEditorProps = {
 export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -155,7 +158,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
           p: 1,
           borderBottom: 1,
           borderColor: "divider",
-          bgcolor: "background.paper",
+          bgcolor: bg,
         }}
       >
         <IconButton
@@ -264,7 +267,7 @@ export default function TipTapEditor({ content, onChange }: TipTapEditorProps) {
       </Box>
 
       {/* Editor */}
-      <Box sx={{ bgcolor: "background.paper", minHeight: 300 }}>
+      <Box sx={{ bgcolor: bg, minHeight: 300 }}>
         <EditorContent editor={editor} />
       </Box>
     </Box>

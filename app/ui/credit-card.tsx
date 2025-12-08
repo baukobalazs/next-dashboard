@@ -101,7 +101,7 @@ const CreditCardChip = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "h-10 w-14 rounded bg-gradient-to-br from-yellow-200 to-yellow-400",
+      "h-10 w-14 rounded bg-linear-to-br from-yellow-200 to-yellow-400",
       "absolute left-6 top-16",
       className
     )}

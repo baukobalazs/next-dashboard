@@ -12,6 +12,9 @@ import Link from "next/link";
 import { formatDateToLocal } from "@/app/lib/utils";
 import Grid from "@mui/material/Grid";
 
+import { useContext } from "react";
+import { ThemeContext } from "@/app/ThemeRegistry";
+
 type ArticlesListProps = {
   articles: ArticleWithTags[];
   isAuthenticated: boolean;
@@ -33,11 +36,13 @@ export default function ArticlesList({
       </Box>
     );
   }
-
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
   return (
     <Grid container spacing={3}>
       {articles.map((article) => (
-        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={article.id}>
+        <Grid size={{ xs: 12, sm: 16, md: 4 }} key={article.id}>
           <Link
             href={`/dashboard/articles/${article.id}`}
             style={{ textDecoration: "none" }}
@@ -64,7 +69,7 @@ export default function ArticlesList({
                   sx={{ objectFit: "cover" }}
                 />
               )}
-              <CardContent sx={{ flexGrow: 1 }}>
+              <CardContent className={`${bg}`} sx={{ flexGrow: 1 }}>
                 <Typography
                   gutterBottom
                   variant="h6"

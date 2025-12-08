@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Tag } from "@/app/lib/definitions";
 import Box from "@mui/material/Box";
@@ -9,6 +9,7 @@ import Chip from "@mui/material/Chip";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import { useDebouncedCallback } from "use-debounce";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 type ArticlesFilterProps = {
   tags: Tag[];
@@ -22,6 +23,10 @@ export default function ArticlesFilter({ tags }: ArticlesFilterProps) {
     searchParams.get("query") || ""
   );
   const selectedTag = searchParams.get("tag") || "";
+
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
@@ -52,7 +57,7 @@ export default function ArticlesFilter({ tags }: ArticlesFilterProps) {
   return (
     <Box sx={{ mb: 4 }}>
       <TextField
-        fullWidth
+        className={`${bg}`}
         placeholder="Searching..."
         value={searchQuery}
         onChange={(e) => {
@@ -66,7 +71,7 @@ export default function ArticlesFilter({ tags }: ArticlesFilterProps) {
             </InputAdornment>
           ),
         }}
-        sx={{ mb: 3 }}
+        sx={{ mb: 3, width: 500 }}
       />
 
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -77,7 +82,10 @@ export default function ArticlesFilter({ tags }: ArticlesFilterProps) {
             onClick={() => handleTagClick(tag.slug)}
             color={selectedTag === tag.slug ? "primary" : "default"}
             variant={selectedTag === tag.slug ? "filled" : "outlined"}
-            sx={{ cursor: "pointer" }}
+            sx={{
+              backgroundColor: isDark ? "#111827" : "white",
+              borderColor: isDark ? "#4B5563" : "#E5E7EB",
+            }}
           />
         ))}
       </Box>

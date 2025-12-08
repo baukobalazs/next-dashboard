@@ -5,6 +5,7 @@ import ArticlesFilter from "@/app/ui/articles/articles-filter";
 import Link from "next/link";
 import { Suspense } from "react";
 import Pagination from "@/app/ui/invoices/pagination";
+import TimeSearch from "@/app/ui/timesearch/timesearch";
 
 export default async function ArticlesPage(props: {
   searchParams?: Promise<{
@@ -44,6 +45,7 @@ export default async function ArticlesPage(props: {
 
       <Suspense fallback={<div>Loading filters...</div>}>
         <ArticlesFilter tags={tags} />
+        <TimeSearch />
       </Suspense>
 
       <Suspense fallback={<div>Loading articles...</div>}>

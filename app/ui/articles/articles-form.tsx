@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useState, useActionState, useContext } from "react";
 import { Article, ArticleWithTags, Tag } from "@/app/lib/definitions";
 import { saveArticle, ArticleState } from "@/app/lib/articles-actions";
 import TipTapEditor from "./tiptap-editor";
@@ -24,6 +24,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import IconButton from "@mui/material/IconButton";
 import { useRouter } from "next/navigation";
 import Autocomplete from "@mui/material/Autocomplete";
+import { ThemeContext } from "@/app/ThemeRegistry";
 
 type ArticleFormProps = {
   userId: string;
@@ -45,6 +46,10 @@ export default function ArticleForm({
     status: article?.status || "draft",
     is_public: article?.is_public ? true : false,
   });
+
+  const { mode } = useContext(ThemeContext);
+  const isDark = mode === "dark";
+  const bg = isDark ? "bg-gray-900" : "bg-white";
 
   const [selectedTags, setSelectedTags] = useState<string[]>(
     article?.tags?.map((t) => t.name) || []
@@ -82,7 +87,7 @@ export default function ArticleForm({
 
   return (
     <Card>
-      <CardContent>
+      <CardContent className={`${bg}`}>
         <form action={formAction}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {/* Cover Image */}
