@@ -46,7 +46,8 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.9.3",
     "use-debounce": "^10.0.6",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13", 
+     "type": "module"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.17",
@@ -61,3 +62,4 @@
     ]
   }
 }
+

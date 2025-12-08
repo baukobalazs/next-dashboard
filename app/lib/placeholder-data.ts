@@ -234,6 +234,22 @@ export const MOCK_ARTICLES: Article[] = [
     created_at: '2025-03-10T10:00:00Z',
     updated_at: '2025-03-10T10:00:00Z',
   },
+   {
+    id: '3',
+    title: 'Epic bitcoin hack',
+    content:
+      '<p>Epic bitcoin hack</p>',
+    excerpt:
+      'Epic bitcoin hack.',
+    author_id: '410544b2-4001-4271-9855-fec4b6a6442a',
+    author_name: 'John Doe',
+    cover_image_url: 'https://picsum.photos/1200/602',
+    status: 'published',
+    is_public: true,
+    published_at: '2025-03-15T10:00:00Z',
+    created_at: '2025-03-15T10:00:00Z',
+    updated_at: '2025-03-15T10:00:00Z',
+  },
 ];
 
 
@@ -244,6 +260,7 @@ export const MOCK_TAGS: Tag[] = [
   { id: '4', name: 'Revenue', slug: 'revenue' },
   { id: '5', name: 'Data Insights', slug: 'data-insights' },
   { id: '6', name: 'Business Strategy', slug: 'business-strategy' },
+  
 ];
 
 

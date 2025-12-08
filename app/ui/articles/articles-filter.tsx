@@ -53,7 +53,7 @@ export default function ArticlesFilter({ tags }: ArticlesFilterProps) {
     <Box sx={{ mb: 4 }}>
       <TextField
         fullWidth
-        placeholder="Keresés..."
+        placeholder="Searching..."
         value={searchQuery}
         onChange={(e) => {
           setSearchQuery(e.target.value);
