@@ -215,7 +215,7 @@ export const MOCK_ARTICLES: Article[] = [
     status: 'published',
     is_public: true,
     published_at: '2025-03-15T10:00:00Z',
-    created_at: '2025-03-15T10:00:00Z',
+    created_at: '2020-03-15T10:00:00Z',
     updated_at: '2025-03-15T10:00:00Z',
   },
   {
@@ -231,7 +231,7 @@ export const MOCK_ARTICLES: Article[] = [
     status: 'published',
     is_public: true,
     published_at: '2025-03-10T10:00:00Z',
-    created_at: '2025-03-10T10:00:00Z',
+    created_at: '2023-03-10T10:00:00Z',
     updated_at: '2025-03-10T10:00:00Z',
   },
    {
@@ -247,7 +247,7 @@ export const MOCK_ARTICLES: Article[] = [
     status: 'published',
     is_public: true,
     published_at: '2025-03-15T10:00:00Z',
-    created_at: '2025-03-15T10:00:00Z',
+    created_at: '2026-03-15T10:00:00Z',
     updated_at: '2025-03-15T10:00:00Z',
   },
 ];

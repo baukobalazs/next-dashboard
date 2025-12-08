@@ -195,6 +195,8 @@ export async function fetchArticles(
   page: number = 1,
   query: string = '',
   tagSlug: string = '',
+  from: string = '',
+  to: string = '',
   userId?: string,
   limit: number = 9
 ): Promise<{ articles: ArticleWithTags[]; total: number }> {
@@ -213,6 +215,13 @@ export async function fetchArticles(
 
     if (userId) {
       filtered = filtered.filter((a) => a.author_id === userId);
+    }
+    if(from){
+      filtered = filtered.filter((a) => a.created_at > from)
+    }
+
+    if(to){
+      filtered = filtered.filter((a) => a.created_at < to)
     }
 
     return {

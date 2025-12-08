@@ -12,6 +12,8 @@ export default async function ArticlesPage(props: {
     query?: string;
     tag?: string;
     page?: string;
+    from?: string;
+    to?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -19,11 +21,15 @@ export default async function ArticlesPage(props: {
   const query = searchParams?.query || "";
   const tagSlug = searchParams?.tag || "";
   const currentPage = Number(searchParams?.page) || 1;
+  const from = searchParams?.from || "";
+  const to = searchParams?.to || "";
 
   const { articles, total } = await fetchArticles(
     currentPage,
     query,
     tagSlug,
+    from,
+    to,
     session?.user?.id
   );
   const tags = await fetchTags();
