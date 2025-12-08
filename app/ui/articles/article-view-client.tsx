@@ -34,16 +34,6 @@ export default function ArticleViewClient({
       </Box>
 
       <Card>
-        {article.cover_image_url && (
-          <CardMedia
-            component="img"
-            height="400"
-            image={article.cover_image_url}
-            alt={article.title}
-            sx={{ objectFit: "cover" }}
-          />
-        )}
-
         <CardContent>
           <Typography variant="h3" component="h1" sx={{ mb: 2 }}>
             {article.title}
@@ -68,13 +58,23 @@ export default function ArticleViewClient({
               </>
             )}
           </Box>
-
+          <Typography variant="h6" component="h2">
+            {article.excerpt}
+          </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 4 }}>
             {article.tags?.map((tag) => (
               <Chip key={tag.id} label={tag.name} />
             ))}
           </Box>
-
+          {article.cover_image_url && (
+            <CardMedia
+              component="img"
+              height="400"
+              image={article.cover_image_url}
+              alt={article.title}
+              sx={{ objectFit: "cover" }}
+            />
+          )}
           {/* Article Content */}
           <Box
             className="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none"
