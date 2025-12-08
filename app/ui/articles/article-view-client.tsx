@@ -29,7 +29,7 @@ export default function ArticleViewClient({
     <div className="w-full max-w-4xl mx-auto">
       <Box sx={{ mb: 3 }}>
         <Link href="/dashboard/articles">
-          <Button startIcon={<ArrowBackIcon />}>Back to Articles</Button>
+          <Button startIcon={<ArrowBackIcon />}>Back to all Articles</Button>
         </Link>
       </Box>
 

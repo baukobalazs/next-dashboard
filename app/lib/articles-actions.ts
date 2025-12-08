@@ -6,6 +6,7 @@ import { Article, Tag, ArticleWithTags } from './definitions';
 
 import { put } from '@vercel/blob';
 import { MOCK_ARTICLES, MOCK_TAGS } from './placeholder-data';
+import { redirect } from 'next/navigation';
 
 
 const USE_MOCK = process.env.USE_MOCK_DATA === 'true';
@@ -165,6 +166,9 @@ export async function saveArticle(
   }
 
   revalidatePath('/dashboard/articles');
+
+  redirect(`/dashboard/articles/${articleId}`)
+
   return { message: 'Article saved successfully!' };
 }
 

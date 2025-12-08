@@ -111,7 +111,7 @@ export default function ArticleForm({
                   startIcon={<PhotoCamera />}
                   disabled={isPending}
                 >
-                  Upload Image
+                  Upload Cover Image
                   <input
                     hidden
                     accept="image/*"
