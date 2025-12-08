@@ -69,10 +69,13 @@ export default function ArticleViewClient({
           {article.cover_image_url && (
             <CardMedia
               component="img"
-              height="400"
               image={article.cover_image_url}
               alt={article.title}
-              sx={{ objectFit: "cover" }}
+              sx={{
+                objectFit: "cover",
+                borderRadius: 1,
+                mb: 5,
+              }}
             />
           )}
           {/* Article Content */}

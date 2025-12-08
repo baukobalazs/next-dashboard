@@ -96,7 +96,7 @@ export default function ArticleForm({
                   src={previewImage}
                   alt="Cover preview"
                   sx={{
-                    width: "100%",
+                    maxWidth: 500,
                     maxHeight: 300,
                     objectFit: "cover",
                     borderRadius: 1,

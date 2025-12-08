@@ -275,7 +275,7 @@ export async function fetchArticles(
         WHERE status = 'published'
           AND (title ILIKE ${'%' + query + '%'} OR excerpt ILIKE ${'%' + query + '%'})
       `;
-    } else if (userId && !query && !tagSlug) {
+    } else if (!query && !tagSlug) {
       // Filter by user only
       articlesResult = await sql`
         SELECT
