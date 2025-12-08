@@ -16,6 +16,7 @@ const TimeSearch = () => {
   const { mode } = useContext(ThemeContext);
   const isDark = mode === "dark";
   const bg = isDark ? "bg-gray-900" : "bg-white";
+  const text = isDark ? "text-gray-300" : "text-gray-700";
 
   const handleFromChange = useDebouncedCallback((date: string) => {
     const params = new URLSearchParams(searchParams);
@@ -43,7 +44,10 @@ const TimeSearch = () => {
   return (
     <div className="">
       <div className="mb-4 mt-4">
-        <label htmlFor="from" className="mb-2 block text-sm font-medium">
+        <label
+          htmlFor="from"
+          className={`mb-2 block text-sm ${text} font-medium`}
+        >
           From
         </label>
         <div className="relative mt-2 rounded-md">
@@ -68,7 +72,10 @@ const TimeSearch = () => {
       </div>
 
       <div className="mb-4 mt-4">
-        <label htmlFor="to" className="mb-2 block text-sm font-medium">
+        <label
+          htmlFor="to"
+          className={`mb-2 block text-sm ${text} font-medium`}
+        >
           To
         </label>
         <div className="relative mt-2 rounded-md">

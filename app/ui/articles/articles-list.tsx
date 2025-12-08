@@ -42,7 +42,11 @@ export default function ArticlesList({
   return (
     <Grid container spacing={3}>
       {articles.map((article) => (
-        <Grid size={{ xs: 12, sm: 16, md: 4 }} key={article.id}>
+        <Grid
+          className="border-3 rounded-xl"
+          size={{ xs: 12, sm: 16, md: 4 }}
+          key={article.id}
+        >
           <Link
             href={`/dashboard/articles/${article.id}`}
             style={{ textDecoration: "none" }}
@@ -55,7 +59,7 @@ export default function ArticlesList({
                 cursor: "pointer",
                 transition: "transform 0.2s, box-shadow 0.2s",
                 "&:hover": {
-                  transform: "translateY(-4px)",
+                  transform: "translateY(-2px)",
                   boxShadow: 6,
                 },
               }}

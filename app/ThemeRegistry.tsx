@@ -12,7 +12,7 @@ export const ThemeContext = createContext({
 });
 
 export default function ThemeRegistry({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<"light" | "dark">("light");
+  const [mode, setMode] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     const saved = localStorage.getItem("theme-mode");
